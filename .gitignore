@@ -12,3 +12,4 @@ results
 stats.json
 src/client/build
 BrowserStackLocal
+package-lock.json
