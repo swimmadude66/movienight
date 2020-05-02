@@ -1,7 +1,7 @@
 import * as argon2 from 'argon2';
 import { Observable, of, throwError, from } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
-import * as uuid from 'uuid/v4';
+import { v4 as uuid} from 'uuid';
 import { DatabaseService } from './db';
 import { LoggingService } from './logger';
 import { User } from '../models/user';

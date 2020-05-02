@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import * as uuid from 'uuid/v4';
+import { v4 as uuid} from 'uuid';
 import {DatabaseService} from './db';
 import {UserSession, SessionInfo} from '../models/auth';
 

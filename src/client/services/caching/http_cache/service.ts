@@ -34,7 +34,6 @@ export class HttpCacheService implements OnDestroy {
         private _ssr: ServerSideService
     ) {
         if (this._ssr.isBrowser()) {
-            console.log('platform is browser');
             try {
                 const shcIndexString = this._store.getSession('shcindex');
                 if (shcIndexString && shcIndexString.length) {

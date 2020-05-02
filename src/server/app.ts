@@ -18,36 +18,36 @@ import {SessionManager} from './services/session';
 import {HelpersService} from './services/helpers';
 import {LoggingService} from './services/logger';
 import {AuthService} from './services/auth';
+import { SocketStoreService } from './services/socket-store';
 
 dotenv.config({silent: true});
+const loggingService = new LoggingService();
+const socketStore = new SocketStoreService();
+
 const APP_CONFIG: Config = {
     environment: process.env.ENVIRONMENT || 'dev',
-    cookie_name: process.env.COOKIE_NAME || '__cookie_name',
+    cookie_name: process.env.COOKIE_NAME || '__mv_nt_local',
     cookie_secret: process.env.COOKIE_SECRET || 'cookie_secret',
     port: (+process.env.NODE_PORT) || 3000,
     log_level: process.env.MORGAN_LOG_LEVEL || 'short',
     client_root: process.env.CLIENT_ROOT || join(__dirname, '../client/'),
     max_workers: +(process.env.MAX_WORKERS || cpus().length),
+    logger: loggingService,
+    socketStore: socketStore,
 };
 
 if (cluster.isMaster) {
     const numCPUs = Math.max(2, Math.min(cpus().length, APP_CONFIG.max_workers));
     const workers: cluster.Worker[] = [];
-    console.log('[ master ]: App starting on port', APP_CONFIG.port);
-    console.log(`[ master ]: Spinning up ${numCPUs - 1} workers`);
+    loggingService.log('[ master ]: App starting on port', APP_CONFIG.port);
+    loggingService.log(`[ master ]: Spinning up ${numCPUs - 1} worker${numCPUs > 2 ? 's' : ''}`);
     for (let i=1; i < numCPUs; i++) {
         const worker = HelpersService.forkWorker();
         workers.push(worker);
     }
 
     cluster.on('listening', (worker) => {
-        console.log(`[ worker ${worker.id} ]: Ready and listening!`);
-    });
-
-    cluster.on('message', (worker, messages, handle) => {
-        if (Array.isArray(messages) && messages.shift() === 'console') {
-            console.log(`[ worker ${worker.id} ]:`, ...messages);
-        }
+        loggingService.log(`[ worker ${worker.id} ]: Ready and listening!`);
     });
 
     cluster.on('exit', (worker, code, signal) => {
@@ -56,21 +56,18 @@ if (cluster.isMaster) {
             workers.splice(deadIndex, 1);
         }
         if (!worker.exitedAfterDisconnect) {
-            console.log(`[ master ]: replacing crashed worker ${worker.id}`);
+            loggingService.log(`[ master ]: replacing crashed worker ${worker.id}`);
             const newWorker = HelpersService.forkWorker();
             workers.push(newWorker);
         }
     });
 
     process.on('exit', () => {
-        console.log('[ master ]: killing workers');
+        loggingService.log('[ master ]: killing workers');
         workers.forEach((worker) => worker.kill());
     });
 
-} else {
-    const loggingService = new LoggingService();
-    APP_CONFIG.logger = loggingService;
-    
+} else {    
     const app = express();
     app.use(compress());
     app.use(userAgent.express());
