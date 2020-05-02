@@ -19,14 +19,14 @@ module.exports = (APP_CONFIG: Config) => {
 
     router.post('/signup', (req, res) => {
         const body = req.body;
-        if (!body || !body.Email || !body.Password) {
-            return res.status(400).send({Error: 'Email and Password are required fields'});
+        if (!body || !body.Username || !body.Password) {
+            return res.status(400).send({Error: 'Username and Password are required fields'});
         } else {
             const passwordValid = authService.validatePasswordCriteria(body.Password);
             if (!passwordValid.Valid) {
                 return res.status(400).send({Error: passwordValid.Message});
             }
-            return authService.signup(body.Email, body.Password)
+            return authService.signup(body.Username, body.Password)
             .subscribe(
                 user => {
                     logger.log('Created User');
@@ -57,11 +57,11 @@ module.exports = (APP_CONFIG: Config) => {
 
     router.post('/login', (req, res) => {
         const body = req.body;
-        if (!body || !body.Email || !body.Password) {
-            return res.status(400).send('Email and Password are required fields');
+        if (!body || !body.Username || !body.Password) {
+            return res.status(400).send('Username and Password are required fields');
         } else {
             let user: User;
-            authService.logIn(body.Email, body.Password)
+            authService.logIn(body.Username, body.Password)
             .pipe(
                 switchMap(userResult => {
                     user = userResult;

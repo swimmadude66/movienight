@@ -52,21 +52,21 @@ export class AuthService {
 
     /**
      * @description sign up as a new user
-     * @param email email to to use as username
+     * @param username username to to use
      * @param password password to use
      */
-    signup(email: string, password: string): Observable<User> {
+    signup(username: string, password: string): Observable<User> {
         const userId = uuid();
         const confirm = uuid().replace(/-/g, '');
-        const q = 'Insert into `users` (`UserId`, `Email`, `PassHash`, `Confirm`) VALUES (?, ?, ?, ?);';
+        const q = 'Insert into `users` (`UserId`, `Username`, `PassHash`, `Confirm`) VALUES (?, ?, ?, ?);';
         return this._argonHash(password)
         .pipe(
-            switchMap(passHash => this._db.query(q, [userId, email, passHash, confirm])),
+            switchMap(passHash => this._db.query(q, [userId, username, passHash, confirm])),
             catchError(err => {
                 this._log.logError(err);
                 if (err.code && err.errno) {
                     if (err.errno === 1022 || err.code === 'ER_DUP_KEY') {
-                        return throwError({Status: 400, Message: 'Email is invalid or taken'});
+                        return throwError({Status: 400, Message: 'Username is invalid or taken'});
                     }
                 }
                 return throwError({Status: 500, Message: 'Error completing signup'});
@@ -74,7 +74,7 @@ export class AuthService {
             map(_ => {
                 const u: User = {
                     UserId: userId,
-                    Email: email,
+                    Username: username,
                     Role: 'user',
                     CreatedAt: new Date()
                 };
@@ -107,14 +107,14 @@ export class AuthService {
     }
 
     /**
-     * @description log in using email and password
-     * @param email email of user to log in
+     * @description log in using username and password
+     * @param username username of user to log in
      * @param password password of user
      */
-    logIn(email: string, password: string): Observable<User> {
-        const q = 'Select `UserId`, `Email`, `PassHash`, `Role`, `CreatedAt` from `users` WHERE `Active`=1 AND `Email`=? LIMIT 1;';
+    logIn(username: string, password: string): Observable<User> {
+        const q = 'Select `UserId`, `Username`, `PassHash`, `Role`, `CreatedAt` from `users` WHERE `Active`=1 AND `Email`=? LIMIT 1;';
         let user: User;
-        return this._db.query<AuthRow[]>(q, [email])
+        return this._db.query<AuthRow[]>(q, [username])
         .pipe(
             switchMap(results => {
                 let passHash: string;
@@ -136,7 +136,7 @@ export class AuthService {
                 if (isValid) {
                     return of(user);
                 } else {
-                    throwError({Status: 400, Message: 'email or password is incorrect'});
+                    throwError({Status: 400, Message: 'username or password is incorrect'});
                 }
             })
         );

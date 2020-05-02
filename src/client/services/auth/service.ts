@@ -14,18 +14,18 @@ export class AuthService {
         private _http: HttpClient
     ) {}
 
-    login(email: string, password: string): Observable<any> {
-        return this._http.post<void>('/api/auth/login', {Email: email, Password: password})
+    login(username: string, password: string): Observable<any> {
+        return this._http.post<void>('/api/auth/login', {Username: username, Password: password})
         .pipe(
             tap(_ => this._authSubject.next(true))
         );
     }
 
-    signup(email: string, password: string): Observable<any> {
-        return this._http.post<void>('/api/auth/signup', {Email: email, Password: password})
+    signup(username: string, password: string): Observable<any> {
+        return this._http.post<void>('/api/auth/signup', {Username: username, Password: password})
         .pipe(
             switchMap(
-                _ => this.login(email, password)
+                _ => this.login(username, password)
             ),
             tap(_ => this._authSubject.next(true))
         )

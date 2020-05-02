@@ -117,7 +117,16 @@ if (cluster.isMaster) {
     }
 
     /*-------- Services --------*/
-    const db = new DatabaseService();
+    const db = new DatabaseService(
+        {
+            host: process.env.DB_HOST || 'localhost',
+            port: process.env.DB_PORT || 3306,
+            database: process.env.DB_DATABASE || 'movienight',
+            user: process.env.DB_USER || 'root',
+            password: process.env.DB_PASSWORD || 'admin',
+            charset: 'utf8mb4' // allow emojis
+        }
+    );
     APP_CONFIG.db = db;
     const sessionManager = new SessionManager(db);
     APP_CONFIG.sessionManager = sessionManager;

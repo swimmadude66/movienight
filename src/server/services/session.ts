@@ -32,13 +32,13 @@ export class SessionManager {
     }
 
     createSession(userId: string, userAgent?: string): Observable<{SessionKey: string, Expires: Date}> {
-        const sessionId = uuid().replace(/\-/ig, '');
+        const sessionKey = uuid().replace(/\-/ig, '');
         const now = new Date();
         const expires = new Date(now.valueOf() + EXPIRATION_MILLISECONDS);
         const q = 'Insert into `sessions` (`SessionKey`, `UserId`, `Expires`, `UserAgent`, `LastUsed`) VALUES (?, ?, ?, ?, ?);';
-        return this._db.query(q, [sessionId, userId, expires, userAgent, now])
+        return this._db.query(q, [sessionKey, userId, expires, userAgent, now])
         .pipe(
-            map(_ => ({SessionKey: sessionId, Expires: expires}))
+            map(_ => ({SessionKey: sessionKey, Expires: expires}))
         );
     }
 

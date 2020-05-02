@@ -8,6 +8,7 @@ import { LoggingService } from './logger';
 
 type SocketServer = socketio.Server;
 type RedisAdapter = socketRedis.RedisAdapter;
+export type SocketNamespace = socketio.Namespace;
 
 export class SocketService {
 
@@ -55,6 +56,10 @@ export class SocketService {
         })
     }
 
+    createNameSpace(name: string): SocketNamespace {
+        return this._io.of(name);
+    }
+
     private _initListener() {
         this._io.on('connect', (socket) => {
             console.log('socket connected', socket.id);
@@ -86,9 +91,10 @@ export class SocketService {
         });
     }
 
-    private _getAllSocketIds(): Observable<string[]> {
+    private _getAllSocketIds(namespace?: string): Observable<string[]> {
         return Observable.create(obs => {
-            this._io.clients((err, clients) => {
+            const nsp = namespace ? this._io.in(namespace) : this._io;
+            nsp.clients((err, clients) => {
                 if (err) {
                     this._logger.logError(err);
                     return obs.error({Status: 500, Message: 'Could not get clients'});

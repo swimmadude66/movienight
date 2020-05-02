@@ -5,13 +5,13 @@
                 <h1 class="form-title">Log in</h1>
                 <form [formGroup]="form" (submit)="login()">
                     <input-group
-                        id="txtEmail"
-                        type="email"
-                        name="email"
-                        [formControl]="formControls['email']"
-                        label="Email"
-                        placeholder="Email"
-                        autocomplete="email"
+                        id="txtUsername"
+                        type="text"
+                        name="username"
+                        [formControl]="formControls['username']"
+                        label="Username"
+                        placeholder="Username"
+                        autocomplete="username"
                     ></input-group>
                     <input-group
                         id="txtPassword"
