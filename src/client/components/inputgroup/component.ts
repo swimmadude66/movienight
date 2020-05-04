@@ -1,7 +1,7 @@
 import {Component, Output, ViewChild, ElementRef, forwardRef, EventEmitter, Input} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR, AbstractControl} from '@angular/forms';
-import {FormErrorParser} from '@core/index';
-import {MaskService} from '@services/index';
+import {FormErrorParser} from '@core/';
+import {MaskService} from '@services/';
 
 export const INPUT_GROUP_VALUE_ACCESSOR : any = {
     provide: NG_VALUE_ACCESSOR,

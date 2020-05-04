@@ -9,6 +9,7 @@ import {LoginComponent} from '@components/login/component';
         RouterModule.forChild(
             [
                 {path: '', pathMatch: 'full', component: LoginComponent},
+                {path: '**', redirectTo: '/'}
             ]
         )
     ],

@@ -10,7 +10,7 @@ import {
 } from '@angular/router';
 import {Observable} from 'rxjs';
 import {tap, map} from 'rxjs/operators';
-import {AuthService} from '@services/index';
+import {AuthService} from '@services/';
 
 @Injectable({
     providedIn: 'root'
@@ -36,6 +36,7 @@ export class NotLoggedInGuard implements CanLoad, CanActivate, CanActivateChild 
     private _isLoggedIn(): Observable<boolean> {
         return this._auth.isLoggedIn()
         .pipe(
+            map(authState => authState.Valid),
             tap(isLoggedIn => {
                 this.loggedIn = isLoggedIn;
                 if (isLoggedIn) {

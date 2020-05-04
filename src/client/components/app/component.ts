@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
+import { Router, NavigationStart, NavigationEnd, NavigationCancel } from '@angular/router';
 import {distinctUntilChanged} from 'rxjs/operators';
-import {Animations} from '@core/animations/index';
-import {SubscriberComponent} from '@core/component/subscriber';
+import {Animations} from '@core/animations/';
+import {Subscriber} from '@core/base/subscriber';
 import {Toast} from '@models/shared/toast';
-import {ConnectionService, ToastService, WebviewService} from '@services/index';
+import {ConnectionService, ToastService, WebviewService} from '@services/';
 
 @Component({
     selector: 'app',
@@ -14,16 +15,19 @@ import {ConnectionService, ToastService, WebviewService} from '@services/index';
         Animations.toast
     ]
 })
-export class AppComponent extends SubscriberComponent implements OnInit {
+export class AppComponent extends Subscriber implements OnInit {
 
     online: boolean = true; // default to true to avoid banner-flicker
     inWebView: boolean = false;
     toasts: Toast[] = [];
+    navLoad: boolean;
 
     constructor(
         private _connection: ConnectionService,
         private _toast: ToastService,
-        private _webviewSerice: WebviewService
+        private _changeDetection: ChangeDetectorRef,
+        private _webviewSerice: WebviewService,
+        private _router: Router,
     ) {
         super();
     }
@@ -51,6 +55,20 @@ export class AppComponent extends SubscriberComponent implements OnInit {
                             this.toasts.shift();
                         }
                         this.toasts.push(t);
+                        this._changeDetection.detectChanges();
+                    }
+                }
+            )
+        );
+
+        this.addSubscription(
+            this._router.events
+            .subscribe(
+                evt => {
+                    if (evt instanceof NavigationStart) {
+                        this.navLoad = true;
+                    } else if (evt instanceof NavigationEnd) {
+                        this.navLoad = false;
                     }
                 }
             )
@@ -61,6 +79,7 @@ export class AppComponent extends SubscriberComponent implements OnInit {
         const burnt = this.toasts.findIndex(t => t.id === toastId);
         if (burnt >= 0){
             this.toasts.splice(burnt, 1);
+            this._changeDetection.detectChanges();
         }
     }
 }

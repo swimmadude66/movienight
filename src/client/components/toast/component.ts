@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
-import { SubscriberComponent } from '@core/index';
+import { Subscriber } from '@core/';
 import { Toast, ToastType } from '@models/shared/toast';
 
 @Component({
@@ -9,7 +9,7 @@ import { Toast, ToastType } from '@models/shared/toast';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class ToastComponent extends SubscriberComponent implements OnInit {
+export class ToastComponent extends Subscriber implements OnInit {
 
     ToastType: typeof ToastType = ToastType;
 

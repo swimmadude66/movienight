@@ -3,10 +3,9 @@ import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import {InputGroupComponent} from '@components/inputgroup/component';
-import {ToastComponent} from '@components/toast/component';
-import {ShortenTextPipe, FloorNumberPipe} from '@pipes/index';
-import {AltTextDirective, ExternalLinkDirective} from '@directives/index';
+import {ShortenTextPipe, FloorNumberPipe} from '@pipes/';
+import {AltTextDirective, ExternalLinkDirective} from '@directives/';
+import {InputGroupComponent, ToastComponent, SpinnerComponent, LoadingSpinnerComponent, FileReaderComponent} from '@components/';
 
 @NgModule({
     imports:[
@@ -22,6 +21,9 @@ import {AltTextDirective, ExternalLinkDirective} from '@directives/index';
         FloorNumberPipe,
         AltTextDirective,
         ExternalLinkDirective,
+        SpinnerComponent,
+        LoadingSpinnerComponent,
+        FileReaderComponent,
     ],
     exports: [
         //imports
@@ -36,6 +38,9 @@ import {AltTextDirective, ExternalLinkDirective} from '@directives/index';
         FloorNumberPipe,
         AltTextDirective,
         ExternalLinkDirective,
+        SpinnerComponent,
+        LoadingSpinnerComponent,
+        FileReaderComponent,
     ]
 })
 export class SharedModule {}

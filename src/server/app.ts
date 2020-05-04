@@ -19,6 +19,7 @@ import {HelpersService} from './services/helpers';
 import {LoggingService} from './services/logger';
 import {AuthService} from './services/auth';
 import { SocketStoreService } from './services/socket-store';
+import { SocketService } from './services/sockets';
 
 dotenv.config({silent: true});
 const loggingService = new LoggingService();
@@ -132,6 +133,14 @@ if (cluster.isMaster) {
     APP_CONFIG.sessionManager = sessionManager;
     const authService = new AuthService(db, loggingService);
     APP_CONFIG.authService = authService;
+    const socketService = new SocketService(
+        server, 
+        socketStore, 
+        loggingService,
+        process.env.REDIS_HOST || 'localhost',
+        +(process.env.REDIS_PORT || 6379)
+    );
+    APP_CONFIG.socketService = socketService;
 
     app.use(require('./middleware/auth')(APP_CONFIG));
 

@@ -3,6 +3,7 @@ import {SessionManager} from '../services/session';
 import {LoggingService} from '../services/logger';
 import {AuthService} from '../services/auth';
 import { SocketStoreService } from '../services/socket-store';
+import { SocketService } from '../services/sockets';
 
 export interface Config {
     environment: string;
@@ -19,4 +20,5 @@ export interface Config {
     db?: DatabaseService;
     sessionManager?: SessionManager;
     authService?: AuthService;
+    socketService?: SocketService;
 }

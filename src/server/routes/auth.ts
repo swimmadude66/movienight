@@ -40,21 +40,6 @@ module.exports = (APP_CONFIG: Config) => {
         }
     });
 
-    router.post('/confirm-email', (req, res, next) => {
-        const body = req.body;
-        if (!body || !body.Email || !body.Confirm) {
-            return res.status(400).send({Error: 'Email and Confirm are required'});
-        }
-        return authService.confirmEmail(body.Email, body.Confirm)
-        .subscribe(
-            _ => res.send({Message: 'Email Confirmed'}),
-            err => {
-                logger.logError(err);
-                return res.status(err.Status || 500).send({Error: err.Message || 'Could not confirm email'})
-            }
-        );
-    });
-
     router.post('/login', (req, res) => {
         const body = req.body;
         if (!body || !body.Username || !body.Password) {
@@ -70,7 +55,7 @@ module.exports = (APP_CONFIG: Config) => {
             ).subscribe(
                 session => {
                     res.cookie(APP_CONFIG.cookie_name, session.SessionKey, {...COOKIE_OPTIONS, expires: session.Expires, secure: req.secure});
-                    return res.send({User: user});
+                    return res.send({Username: user.Username, UserId: user.UserId, Admin: user.Role === 'admin'});
                 },
                 err => {
                     logger.logError(err);
@@ -81,11 +66,11 @@ module.exports = (APP_CONFIG: Config) => {
     });
 
     router.get('/valid', (req, res) => {
-        return res.send(!!res.locals.usersession);
-    });
-
-    router.get('/isadmin', (req, res) => {
-        return res.send(!!(res.locals.usersession && res.locals.usersession.Role === 'admin'));
+        return res.send({
+            Valid: !!res.locals.usersession, 
+            Admin: !!(res.locals.usersession && res.locals.usersession.Role === 'admin'),
+            Username: res.locals.usersession && res.locals.usersession.Username
+        });
     });
 
     router.post('/logout', (req, res) => {

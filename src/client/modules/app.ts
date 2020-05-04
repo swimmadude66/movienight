@@ -3,15 +3,15 @@ import {RouterModule} from '@angular/router';
 import {BrowserModule, BrowserTransferStateModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from '@modules/shared';
-import {AppComponent} from '@components/app/component';
-import {IsLoggedInGuard, NotLoggedInGuard} from '@guards/index'
+import {IsLoggedInGuard, NotLoggedInGuard} from '@guards/'
+import {AppComponent, AppHeaderComponent} from '@components/';
 
 @NgModule({
     bootstrap: [
         AppComponent
     ],
     imports: [
-        BrowserModule.withServerTransition({appId: 'demowebapp'}),
+        BrowserModule,
         BrowserAnimationsModule,
         SharedModule,
         BrowserTransferStateModule,
@@ -19,12 +19,15 @@ import {IsLoggedInGuard, NotLoggedInGuard} from '@guards/index'
             [
                 {path: 'login', canLoad: [NotLoggedInGuard], canActivateChild: [NotLoggedInGuard], loadChildren: './routes/+login#LoginLazyModule'},
                 {path: 'signup', canLoad: [NotLoggedInGuard], canActivateChild: [NotLoggedInGuard], loadChildren: './routes/+signup#SignupLazyModule'},
-                {path: '', canLoad: [IsLoggedInGuard], canActivateChild: [IsLoggedInGuard], loadChildren: './routes/+demo#DemoLazyModule'},
+                {path: 'theatres', canLoad: [IsLoggedInGuard], canActivateChild: [IsLoggedInGuard], loadChildren: './routes/+theatres#TheatresLazyModule'},
+                {path: '', canLoad: [IsLoggedInGuard], canActivateChild: [IsLoggedInGuard], loadChildren: './routes/+home#HomeLazyModule'},
+                {path: '**', redirectTo: '/'}
             ]
         )
     ],
     declarations: [
         AppComponent,
+        AppHeaderComponent,
     ]
 })
 export class AppModule {}

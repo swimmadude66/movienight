@@ -1,0 +1,18 @@
+<div class="container-fluid">
+    <div class="row size-limited">
+        <div class="page-item" style="max-width:100%;">
+            <file-reader
+                accepts="video/*"
+                (info)="handleFileInfo($event)"
+            ></file-reader>
+
+            <br />
+            <div class="video-container" *ngIf="videoPreview">
+                <video
+                    [src]="videoPreview"
+                    width="100%"
+                ></video>
+            </div>
+        </div>
+    </div>
+</div>

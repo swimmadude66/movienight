@@ -1,10 +1,14 @@
-@import '~normalize-scss/sass/_normalize';
+@import '~normalize-scss/sass/normalize/_import-now';
 
 @import '_variables';
 @import '_grid';
 @import '_helpers';
 @import '_buttons';
 @import '_font';
+
+* {
+    box-sizing: border-box;
+}
 
 html, body {
     height: 100%; // Default to full page
@@ -22,4 +26,10 @@ body {
 .error-text {
     color: $error-color;
     font-size: 1.4rem;
+}
+
+.size-limited {
+    max-width: $max-content-width;
+    margin-left: auto;
+    margin-right: auto;
 }

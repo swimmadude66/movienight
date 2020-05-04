@@ -1,0 +1,40 @@
+@import '_variables';
+@import '_animations';
+
+$icon-size: 10rem;
+$icon-offset: ($icon-size / 2);
+
+.loading-overlay {
+    position: fixed;
+    z-index: 999 !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: $main-color; // fallback
+    background-color: rgba($main-color, 0.8);
+
+    &.preload {
+        background-color: $main-color;
+    }
+
+    .spinner {
+        z-index: 999 !important;
+        width: $icon-size;
+        height: $icon-size;
+        position: absolute;
+        top: calc(50% - #{$icon-offset});
+        left: calc(50% - #{$icon-offset});
+
+        .spinner-container {
+            display: block;
+            width: $icon-size;
+            height: $icon-size;
+        }
+
+        .loading {
+            text-align: center;
+            color: #fff;
+        }
+    }
+}

@@ -7,6 +7,9 @@ export interface TheatreInfo {
     Access?: string; // random string to use as a "password"
     Active: boolean;
     Created?: Date|string;
+
+    // derived fields
+    IsHost?: boolean;
 }
 
 export interface VideoInfo {

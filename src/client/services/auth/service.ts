@@ -3,50 +3,62 @@ import {HttpClient} from '@angular/common/http';
 import {Observable, ReplaySubject} from 'rxjs';
 import {tap, switchMap} from 'rxjs/operators';
 
+export interface AuthState {
+    Valid: boolean;
+    Admin: boolean;
+    Username?: string;
+}
+
+interface LoginResponse {
+    Username: string;
+    UserId: string;
+    Admin: boolean;
+}
+
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
 
-    private _authSubject: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+    private _authSubject: ReplaySubject<AuthState> = new ReplaySubject<AuthState>(1);
 
     constructor(
         private _http: HttpClient
     ) {}
 
-    login(username: string, password: string): Observable<any> {
-        return this._http.post<void>('/api/auth/login', {Username: username, Password: password})
+    login(username: string, password: string): Observable<LoginResponse> {
+        return this._http.post<LoginResponse>('/api/auth/login', {Username: username, Password: password})
         .pipe(
-            tap(_ => this._authSubject.next(true))
+            tap(res => this._authSubject.next({Valid: true, Admin: res.Admin, Username: res.Username}))
         );
     }
 
-    signup(username: string, password: string): Observable<any> {
+    signup(username: string, password: string): Observable<LoginResponse> {
         return this._http.post<void>('/api/auth/signup', {Username: username, Password: password})
         .pipe(
             switchMap(
                 _ => this.login(username, password)
             ),
-            tap(_ => this._authSubject.next(true))
+            tap(res => this._authSubject.next({Valid: true, Admin: res.Admin, Username: res.Username}))
         )
     }
 
 
-    isLoggedIn(): Observable<boolean> {
-        return this._http.get<boolean>('/api/auth/valid')
+    isLoggedIn(): Observable<AuthState> {
+        return this._http.get<AuthState>('/api/auth/valid')
         .pipe(
-            tap(valid => this._authSubject.next(valid))
+            tap(response => this._authSubject.next(response))
         );
     }
 
     logOut(): Observable<any> {
         return this._http.post<void>('/api/auth/logout', {})
         .pipe(
-            tap(_ => this._authSubject.next(true))
+            tap(_ => this._authSubject.next({Valid: false, Admin: false, Username: null}))
         );
     }
 
-    observedLoggedIn(): Observable<boolean> {
+    observedLoggedIn(): Observable<AuthState> {
         return this.isLoggedIn()
         .pipe(
             switchMap(_ => this._authSubject)

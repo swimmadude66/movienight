@@ -1,21 +1,21 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
-import {SubscriberComponent, PasswordValidation, FormErrorParser} from '@core/index';
-import {AuthService} from '@services/index';
+import {Subscriber, PasswordValidation} from '@core/';
+import {AuthService} from '@services/';
 
 @Component({
     selector: 'signup',
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class SignupComponent extends SubscriberComponent {
+export class SignupComponent extends Subscriber {
 
     form: FormGroup;
     error: string;
 
     formControls = {
-        email: new FormControl('', [Validators.required, Validators.email]),
+        username: new FormControl('', [Validators.required]),
         password: new FormControl('', [Validators.required]),
         confirmPassword: new FormControl('', [Validators.required])
     };
@@ -26,7 +26,7 @@ export class SignupComponent extends SubscriberComponent {
         private _auth: AuthService
     ) {
         super();
-        this.form = _fb.group(this.formControls,
+        this.form = this._fb.group(this.formControls,
         {
             validator: PasswordValidation.matchPassword
         });
@@ -38,7 +38,7 @@ export class SignupComponent extends SubscriberComponent {
             return;
         }
         this.addSubscription(
-            this._auth.signup(this.form.get('email').value, this.form.get('password').value)
+            this._auth.signup(this.form.get('username').value, this.form.get('password').value)
             .subscribe(
                 _ => {
                     this.form.reset();

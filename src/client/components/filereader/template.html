@@ -1,0 +1,10 @@
+<div class="file-reader-container">
+    <div class="dnd-area" (dragover)="handleDragOver($event)" (drop)="handleSelect($event)">
+        <div class="input-container">
+            <input type="file" [attr.accepts]="accepts" (change)="handleSelect($event)">
+        </div>
+    </div>
+    <div class="error-container">
+        <p class="error-text" *ngIf="error && error.length">{{error}}</p>
+    </div>
+</div>

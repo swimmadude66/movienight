@@ -60,6 +60,32 @@ export class SocketService {
         return this._io.of(name);
     }
 
+    remoteJoin(socketId: string, room: string): Observable<any> {
+        return Observable.create(obs => {
+            (this._io.of('/').adapter as RedisAdapter).remoteJoin(socketId, room, err => {
+                if (err) {
+                    this._logger.logError(err);
+                    return obs.error({Status: 500, Message: 'Could not join room'});
+                }
+                obs.next(true);
+                return obs.complete();
+            })
+        });
+    }
+
+    getRoomOccupants(roomId: string): Observable<string[]> {
+        return Observable.create(obs => {
+            (this._io.in(roomId).adapter as RedisAdapter).clients([roomId], (err, clients) =>{
+                if (err) {
+                    this._logger.logError(err);
+                    return obs.error({Status: 500, Message: 'Could not get room clients'});
+                }
+                obs.next(clients);
+                return obs.complete();
+            })
+        });
+    }
+
     private _initListener() {
         this._io.on('connect', (socket) => {
             console.log('socket connected', socket.id);

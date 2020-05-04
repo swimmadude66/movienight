@@ -1,15 +1,15 @@
 import {Component} from '@angular/core';
 import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
-import {SubscriberComponent} from '@core/index';
-import {AuthService} from '@services/index';
+import {Subscriber} from '@core/';
+import {AuthService} from '@services/';
 
 @Component({
     selector: 'login',
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class LoginComponent extends SubscriberComponent {
+export class LoginComponent extends Subscriber {
 
     serverError: string;
 

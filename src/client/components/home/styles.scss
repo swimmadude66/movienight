@@ -1,0 +1,15 @@
+@import '_variables';
+
+.non-admin-view {
+    display: flex;
+    width: 100%;
+    margin-top: 10%;
+
+    .invite-needed {
+        flex: 1 1 auto;
+        padding: 1rem 2rem;
+        background-color: $almost-black;
+        color: $almost-white;
+        text-align: center;
+    }
+}

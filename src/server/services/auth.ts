@@ -84,35 +84,12 @@ export class AuthService {
     }
 
     /**
-     * @description A way to confirm email. <Disabled by default>
-     * @param email email to which the confirmation was sent
-     * @param confirm the id from the url
-     */
-    confirmEmail(email: string, confirm: string): Observable<any> {
-        const q = 'Update `users` SET `Active`=1, `Confirm`=null WHERE `Confirm`=? AND `Email`=? AND `Active`=0;';
-        return this._db.query(q, [confirm, email])
-        .pipe(
-            catchError(err => {
-                this._log.logError(err);
-                return throwError({Status: 500, Message: 'Email could not be confirmed'});
-            }),
-            switchMap(result => {
-                if ((('changedRows' in result) && result.changedRows > 0) || (('affectedRows' in result) && result.affectedRows > 0)) {
-                    return of({Message: `Email Confirmed for ${email}`});
-                } else {
-                    return throwError({Status: 400, Message: 'Could not locate that user'});
-                }
-            })
-        );
-    }
-
-    /**
      * @description log in using username and password
      * @param username username of user to log in
      * @param password password of user
      */
     logIn(username: string, password: string): Observable<User> {
-        const q = 'Select `UserId`, `Username`, `PassHash`, `Role`, `CreatedAt` from `users` WHERE `Active`=1 AND `Email`=? LIMIT 1;';
+        const q = 'Select `UserId`, `Username`, `PassHash`, `Role`, `CreatedAt` from `users` WHERE `Active`=1 AND `Username`=? LIMIT 1;';
         let user: User;
         return this._db.query<AuthRow[]>(q, [username])
         .pipe(

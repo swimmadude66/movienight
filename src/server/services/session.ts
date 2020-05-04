@@ -22,9 +22,9 @@ export class SessionManager {
     }
 
     getUserSession(sessionKey: string): Observable<UserSession> {
-        const q = 'Select u.UserId, u.Email, s.SessionKey, s.Expires from `sessions` s'
-        + ' join `users` u on u.UserId = s.UserId'
-        + ' where s.Active=1 AND u.Active=1 AND s.SessionKey=? AND s.Expires > ? LIMIT 1;';
+        const q = 'Select u.`UserId`, u.`Username`, u.`Role`, s.`SessionKey`, s.`Expires` from `sessions` s'
+        + ' join `users` u on u.`UserId` = s.`UserId`'
+        + ' where s.`Active`=1 AND u.`Active`=1 AND s.`SessionKey`=? AND s.`Expires` > ? LIMIT 1;';
         return this._db.query<UserSession[]>(q, [sessionKey, new Date()])
         .pipe(
             map(sessions => sessions.length ? sessions[0] : null)

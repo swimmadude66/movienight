@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import { MaskService } from '@services/index';
+import { MaskService } from '@services/';
 
 describe('MaskService', () => {
     let maskService: MaskService;

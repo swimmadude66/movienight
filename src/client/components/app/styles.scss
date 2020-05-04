@@ -1,7 +1,4 @@
 @import '_variables';
-
-$wrapper-size: 0rem;
-$one-screen-size: 0rem;
  
 .offline-banner {
     background-color: $main-color;
@@ -13,7 +10,7 @@ $one-screen-size: 0rem;
         height: $banner-height;
     }
     .offline-text {
-        color: #000;
+        color: #fff;
         font-size: 1.6rem;
         line-height: 2rem;
         margin: 0;
@@ -26,59 +23,39 @@ $one-screen-size: 0rem;
 .main {
     display: flex;
     flex-direction: row;
-    min-height: calc(100vh - #{$wrapper-size});
+    min-height: calc(100vh - #{$header-height});
     max-width: 100%;
+
+    .header-wrapper-container {
+        flex: 0 0 $header-height;
+        max-height: $header-height;
+        width: 100%;
+    }
 
     .wrapper {
         flex: 0 0 100%;
         max-width: 100%;
-        min-height: calc(100vh - #{$wrapper-size});
+        min-height: calc(100vh - #{$header-height});
+        background-image: url('/assets/images/curtains.webp');
+        background-size: 70rem 100%;
     }
     
     &.offline {
-        min-height: calc(100vh - #{$wrapper-size + $banner-height-xs});
+        min-height: calc(100vh - #{$header-height + $banner-height-xs});
         @media(min-width: $screen-sm-min) {
-            min-height: calc(100vh - #{$wrapper-size + $banner-height-sm});
+            min-height: calc(100vh - #{$header-height + $banner-height-sm});
         }
         @media(min-width: $screen-md-min) {
-            min-height: calc(100vh - #{$wrapper-size + $banner-height});
+            min-height: calc(100vh - #{$header-height + $banner-height});
         }
 
         .wrapper {
-            min-height: calc(100vh - #{$wrapper-size + $banner-height-xs});
+            min-height: calc(100vh - #{$header-height + $banner-height-xs});
             @media(min-width: $screen-sm-min) {
-                min-height: calc(100vh - #{$wrapper-size + $banner-height-sm});
+                min-height: calc(100vh - #{$header-height + $banner-height-sm});
             }
             @media(min-width: $screen-md-min) {
-                min-height: calc(100vh - #{$wrapper-size + $banner-height});
-            }
-        }
-    }
-
-    @media (min-height: 65rem) {
-        min-height: calc(100vh - #{$one-screen-size});
-
-        .wrapper {
-            min-height: calc(100vh - #{$one-screen-size});
-        }
-
-        &.offline {
-            min-height: calc(100vh - #{$one-screen-size + $banner-height-xs});
-            @media(min-width: $screen-sm-min) {
-                min-height: calc(100vh - #{$one-screen-size + $banner-height-sm});
-            }
-            @media(min-width: $screen-md-min) {
-                min-height: calc(100vh - #{$one-screen-size + $banner-height});
-            }
-    
-            .wrapper {
-                min-height: calc(100vh - #{$one-screen-size + $banner-height-xs});
-                @media(min-width: $screen-sm-min) {
-                    min-height: calc(100vh - #{$one-screen-size + $banner-height-sm});
-                }
-                @media(min-width: $screen-md-min) {
-                    min-height: calc(100vh - #{$one-screen-size + $banner-height});
-                }
+                min-height: calc(100vh - #{$header-height + $banner-height});
             }
         }
     }

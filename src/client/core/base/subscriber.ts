@@ -1,7 +1,8 @@
 import {OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
 
-export class SubscriberComponent implements OnDestroy {
+// Base class for anything using subscriptions
+export class Subscriber implements OnDestroy {
 
     private _subscriptions: Subscription[] = [];
 
@@ -11,11 +12,11 @@ export class SubscriberComponent implements OnDestroy {
         this.clearSubscriptions();
     }
 
-    addSubscription(subscription: Subscription): void {
+    protected addSubscription(subscription: Subscription): void {
         this._subscriptions.push(subscription);
     }
 
-    clearSubscriptions() {
+    protected clearSubscriptions() {
         this._subscriptions.forEach(s => {
             if (s.unsubscribe) {
                 s.unsubscribe();

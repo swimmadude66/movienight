@@ -1,19 +1,20 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {SharedModule} from '@modules/shared';
-import {DemoComponent} from '@components/demo/component';
+import { HomeComponent } from '@components';
 
 @NgModule({
     imports: [
         SharedModule,
         RouterModule.forChild(
             [
-                {path: '', pathMatch: 'full', component: DemoComponent},
+                {path: '', pathMatch: 'full', component: HomeComponent},
+                {path: '**', redirectTo: '/'}
             ]
         )
     ],
     declarations: [
-        DemoComponent
+        HomeComponent
     ]
 })
-export class DemoLazyModule {}
+export class HomeLazyModule {}

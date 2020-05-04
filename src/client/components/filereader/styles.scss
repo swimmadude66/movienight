@@ -1,0 +1,29 @@
+@import '_variables';
+
+.file-reader-container {
+    padding: 2rem;
+    background-color: $almost-white;
+
+    .dnd-area {
+        border: 0.2rem dashed $divider-color;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .input-container {
+            padding: 1rem;
+            text-align: center;
+
+        }
+    }
+
+    .error-container {
+        height: 2rem;
+
+        .error-text {
+            font-size: 1.4rem;
+            line-height: 2rem;
+        }
+    }
+}

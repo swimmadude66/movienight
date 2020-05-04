@@ -1,0 +1,42 @@
+<div class="container-fluid">
+    <div class="row size-limited">
+        <div class="theatres-container" *ngIf="isAdmin">
+            <div class="theatre-container" *ngFor="let theatre of theatres">
+                <h2 class="theatre-name">{{theatre.Name}}</h2>
+                <button class="btn btn-info" [routerLink]="['/theatres', theatre?.TheatreId]" [queryParams]="{'a': theatre?.Access}">
+                    Join
+                </button>
+            </div>
+            <div class="create-theatre-container">
+                <div class="create-btn-container" *ngIf="!creating">
+                    <button class="btn btn-primary" (click)="startCreate()">
+                        Create Theatre
+                    </button>
+                </div>
+                <div class="create-form-container" *ngIf="creating">
+                    <form [formGroup]="theatreForm" (submit)="theatreForm.valid && submitCreate()">
+                        <input-group
+                            id="txtTheatreName"
+                            type="text"
+                            name="theatrename"
+                            [formControl]="formControls['Name']"
+                            label="Name"
+                            placeholder="Name your Theatre"
+                            autocomplete="off"
+                        >
+                        </input-group>
+                        <button class="btn btn-primary" type="submit" [disabled]="theatreForm.invalid || isLoading">
+                            Create Theatre
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="non-admin-view" *ngIf="!isAdmin">
+            <div class="invite-needed">
+                <h1>Welcome to Movie Night!</h1>
+                <p>Unfortunately, Movie night sessions are currently invite-only. If you received an invite link, please double-check the url and try again.</p>
+            </div>
+        </div>
+    </div>
+</div>
