@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { map, distinctUntilChanged, timeout, switchMap, first } from 'rxjs/operators';
 import { HttpCacheService } from '@services/caching';
 import { TheatreInfo } from '@models/theatre';
 import { Subscriber } from '@core/';
@@ -48,10 +48,16 @@ export class TheatreService extends Subscriber {
     }
 
     joinTheatre(theatreId: string, access: string): Observable<TheatreInfo> {
-        return this._http.post<{Theatre: TheatreInfo}>(
-            `/api/theatres/join/${theatreId}`,
-            {Access: access, SocketId: this._socketId}
-        ).pipe(
+        return this._socket.observeSocketId()
+        .pipe(
+            first(sid => !!sid && sid.length > 0),
+            timeout(2000), // 2s timeout to get first connection
+            switchMap(socketId =>
+                this._http.post<{Theatre: TheatreInfo}>(
+                    `/api/theatres/join/${theatreId}`, 
+                    {Access: access, SocketId: socketId}
+                )
+            ),
             map(res => res.Theatre)
         );
     }

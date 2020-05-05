@@ -90,8 +90,6 @@ export class SocketStoreService {
     }
 
     getSockets(userId: string): Observable<string[]> {
-        console.log('getting sockets for user', userId);
-        console.log('known users', Object.keys(this._userSockets));
         return of(this._userSockets[userId] || []);
     }
 

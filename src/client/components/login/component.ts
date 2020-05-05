@@ -37,7 +37,13 @@ export class LoginComponent extends Subscriber {
             .subscribe(
                 _ => {
                     this.form.reset();
-                    this._router.navigate(['/']);
+                    const next = this._auth.getDeepLink();
+                    if (next) {
+                        this._auth.clearDeepLink()
+                        this._router.navigate([next.path], {queryParams: next.params});
+                    } else {
+                        this._router.navigate(['/']);
+                    }
                 },
                 err => this.serverError = 'Could not login at this time'
             )

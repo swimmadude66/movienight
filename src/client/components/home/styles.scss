@@ -1,5 +1,53 @@
 @import '_variables';
 
+.theatres-container {
+    display: flex;
+    width: 100%;
+    padding: 2rem 0;
+
+    .theatre-container {
+        flex: 1;
+        min-width: 26rem;
+        max-width: 32rem;
+        padding: 1rem;
+        text-align: center;
+        background-color: $almost-black;
+
+        .theatre-name {
+            margin: 0 0 1rem 0;
+            font-size: 1.8rem;
+            color: $almost-white;
+            font-weight: 700;
+            line-height: 2rem;
+            text-align: center;
+        }
+
+        .video-info {
+            max-width: 70%;
+            margin: 1rem auto;
+            text-align: left;
+            color: $almost-white;
+            min-height: 10rem;
+
+            .video-header {
+                text-align: center;
+            }
+            
+            .no-video {
+                text-align: center;
+                font-weight: 500;
+                font-size: 1.4rem;
+                line-height: 2rem;
+                margin: calc(50% - 2rem) 0;
+            }
+        }
+
+        .join-btn {
+            width: 100%;
+        }
+    }
+}
+
 .non-admin-view {
     display: flex;
     width: 100%;

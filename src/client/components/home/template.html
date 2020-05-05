@@ -1,15 +1,26 @@
 <div class="container-fluid">
-    <div class="row size-limited">
-        <div class="theatres-container" *ngIf="isAdmin">
+    <ng-container *ngIf="isAdmin">
+        <div class="theatres-container size-limited" >
             <div class="theatre-container" *ngFor="let theatre of theatres">
                 <h2 class="theatre-name">{{theatre.Name}}</h2>
-                <button class="btn btn-info" [routerLink]="['/theatres', theatre?.TheatreId]" [queryParams]="{'a': theatre?.Access}">
+                <div class="video-info">
+                    <ng-container *ngIf="theatre?.Video">
+                        <h3 class="video-header">- Now Playing -</h3>
+                        <p class="video-title">Title: {{theatre?.Video?.Title}}</p>
+                    </ng-container>
+                    <ng-container *ngIf="!theatre?.Video">
+                        <p class="no-video">No video selected</p>
+                    </ng-container>
+                </div>
+                <button class="btn btn-black-inverse join-btn" [routerLink]="['/theatres', theatre?.TheatreId]" [queryParams]="{'a': theatre?.Access}">
                     Join
                 </button>
             </div>
+        </div>
+        <div class="row size-limited">
             <div class="create-theatre-container">
                 <div class="create-btn-container" *ngIf="!creating">
-                    <button class="btn btn-primary" (click)="startCreate()">
+                    <button class="btn btn-black" (click)="startCreate()">
                         Create Theatre
                     </button>
                 </div>
@@ -32,6 +43,8 @@
                 </div>
             </div>
         </div>
+    </ng-container>
+    <div class="row size-limited">
         <div class="non-admin-view" *ngIf="!isAdmin">
             <div class="invite-needed">
                 <h1>Welcome to Movie Night!</h1>

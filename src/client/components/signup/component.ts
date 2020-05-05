@@ -42,7 +42,13 @@ export class SignupComponent extends Subscriber {
             .subscribe(
                 _ => {
                     this.form.reset();
-                    this._router.navigate(['/']);
+                    const next = this._auth.getDeepLink();
+                    if (next) {
+                        this._auth.clearDeepLink()
+                        this._router.navigate([next.path], {queryParams: next.params});
+                    } else {
+                        this._router.navigate(['/']);
+                    }
                 },
                 err => this.error = 'Could not signup at this time'
             )

@@ -5,10 +5,10 @@
     <div class="rest-of-header">
         <div class="flex-spacer"></div>
         <div class="user-menu-container" *ngIf="isLoggedIn">
-            {{username}}
-            <!-- Current username V -->
-            <!-- -- Profile -->
-            <!-- -- LogOut -->
+            <p class="user-menu">Welcome, {{username}}</p>
+        </div>
+        <div class="logout-container" *ngIf="isLoggedIn">
+            <button class="btn btn-error" (click)="logOut()">Log out</button>
         </div>
     </div>
 </div>

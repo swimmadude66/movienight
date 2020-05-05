@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core'
+import { Router } from '@angular/router';
 import { Subscriber } from '@core/base/subscriber';
 import { AuthService } from '@services/auth/service';
 
@@ -14,7 +15,8 @@ export class AppHeaderComponent extends Subscriber implements OnInit{
     username: string;
 
     constructor(
-        private _auth: AuthService
+        private _auth: AuthService,
+        private _router: Router
     ) {
         super();
     }
@@ -28,6 +30,16 @@ export class AppHeaderComponent extends Subscriber implements OnInit{
                     this.isAdmin = res.Admin;
                     this.username = res.Username;
                 }
+            )
+        );
+    }
+
+    logOut() {
+        this.addSubscription(
+            this._auth.logOut()
+            .subscribe(
+                _ => this._router.navigate(['/login']),
+                err => this._router.navigate(['/login']),
             )
         );
     }

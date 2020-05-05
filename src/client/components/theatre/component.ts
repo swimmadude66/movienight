@@ -14,7 +14,6 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 export class TheatreComponent extends Subscriber implements OnInit {
 
     isLoading: boolean = false;
-    isHost: boolean = false;
     
     theatre: TheatreInfo;
 
@@ -30,7 +29,7 @@ export class TheatreComponent extends Subscriber implements OnInit {
 
     ngOnInit() {
         console.log(this._route.snapshot.data);
-        this._theatre = this._route.snapshot.data.Theatre;
+        this.theatre = this._route.snapshot.data.theatre;
     }
 
     handleFileInfo(fileInfo: FileInfo) {

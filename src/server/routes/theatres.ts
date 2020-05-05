@@ -41,6 +41,7 @@ module.exports = (APP_CONFIG: Config) => {
         theatreService.joinTheatre(theatreId, access, userId, socketId)
         .subscribe(
             theatre => {
+                theatre.IsHost = (theatre.Host === userId);
                 return res.send({Theatre: theatre});
             },
             err => {

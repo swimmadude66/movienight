@@ -1,7 +1,14 @@
 <div class="file-reader-container">
-    <div class="dnd-area" (dragover)="handleDragOver($event)" (drop)="handleSelect($event)">
+    <div class="dnd-area" (dragover)="handleDragOver($event)" (drop)="handleSelect($event)" *ngIf="!reading">
         <div class="input-container">
             <input type="file" [attr.accepts]="accepts" (change)="handleSelect($event)">
+        </div>
+    </div>
+    <div class="progress-container" *ngIf="reading">
+        <p class="reading-message">Reading file...</p>
+        <div class="progress-bar-outer">
+            <div class="progress-bar-inner" [ngStyle]="{'width': progress+'%'}"></div>
+            <p class="progress-percent">{{progress}}%</p>
         </div>
     </div>
     <div class="error-container">

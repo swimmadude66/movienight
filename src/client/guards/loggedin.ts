@@ -6,7 +6,9 @@ import {
     Router, 
     Route, 
     ActivatedRouteSnapshot, 
-    RouterStateSnapshot
+    RouterStateSnapshot,
+    UrlSegment,
+    Params
 } from '@angular/router';
 import {Observable} from 'rxjs';
 import {tap, map} from 'rxjs/operators';
@@ -23,7 +25,7 @@ export class IsLoggedInGuard implements CanLoad, CanActivate, CanActivateChild {
         private _auth: AuthService
     ) {}
 
-    canLoad(route: Route): Observable<boolean> {
+    canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> {
         return this._isLoggedIn();
     }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
@@ -34,12 +36,15 @@ export class IsLoggedInGuard implements CanLoad, CanActivate, CanActivateChild {
     }
 
     private _isLoggedIn(): Observable<boolean> {
+        const target = location.pathname;
+        const query = location.search || '';
         return this._auth.isLoggedIn()
         .pipe(
             map(authState => authState.Valid),
             tap(isLoggedIn => {
                 this.loggedIn = isLoggedIn;
                 if (!isLoggedIn) {
+                    this._auth.storeDeepLink(target, query);
                     return this._router.navigate(['/login']);
                 }
             })

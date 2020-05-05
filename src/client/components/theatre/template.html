@@ -1,17 +1,25 @@
 <div class="container-fluid">
     <div class="row size-limited">
-        <div class="page-item" style="max-width:100%;">
-            <file-reader
-                accepts="video/*"
-                (info)="handleFileInfo($event)"
-            ></file-reader>
-
-            <br />
-            <div class="video-container" *ngIf="videoPreview">
-                <video
-                    [src]="videoPreview"
-                    width="100%"
-                ></video>
+        <div class="host-view" *ngIf="theatre?.IsHost">
+            <div class="video-required" *ngIf=" !theatre.Video">
+                <h1 class="video-required-header">Please select a video to watch</h1>
+                <div class="file-upload-container" *ngIf="!videoPreview">
+                    <file-reader
+                        accepts="video/*"
+                        (info)="handleFileInfo($event)"
+                    ></file-reader>
+                </div>
+                <div class="video-preview-container" *ngIf="videoPreview">
+                    <div class="preview-actions-container">
+                        <!-- Accept -> upload -->
+                        <!-- Change -> go back to reader -->
+                    </div>
+                    <video
+                        [src]="videoPreview"
+                        controls="true"
+                        width="100%"
+                    ></video>
+                </div>
             </div>
         </div>
     </div>

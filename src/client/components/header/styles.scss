@@ -7,7 +7,6 @@
     max-height: $header-height;
     padding: 0.2rem 1rem;
     background-color: $almost-black;
-    border-bottom: 0.1rem solid $divider-color;
     align-items: center;
 
     .logo-container {
@@ -27,6 +26,18 @@
             justify-self: end;
             text-align: right;
             padding: 0.2rem 1rem 0.2rem 0.5rem;
+
+            .user-menu {
+                color: $almost-white;
+                padding: 0 1rem;
+            }
+        }
+
+        .logout-container {
+            flex: 0 1 auto;
+            justify-self: end;
+            text-align: right;
+            padding: 1rem;
         }
     }
 }

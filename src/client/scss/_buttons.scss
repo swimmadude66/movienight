@@ -37,22 +37,33 @@ button {
 }
 
 .btn-success {
-    @include button($success-color, #fff);
+    @include button($success-color, $almost-white);
 }
 .btn-error {
-    @include button($error-color, #fff);
+    @include button($error-color, $almost-white);
 }
 .btn-primary {
-    @include button($main-color, #fff);
+    @include button($main-color, $almost-white);
+}
+.btn-black {
+    @include button($almost-black, $almost-white);
+}
+.btn-white {
+    @include button($almost-white, $almost-black);
 }
 .btn-success-inverse {
-    @include button-inverse($success-color, #fff);
+    @include button-inverse($success-color, $almost-white);
 }
 .btn-error-inverse {
-    @include button-inverse($error-color, #fff);
+    @include button-inverse($error-color, $almost-white);
 }
 .btn-primary-inverse {
-    @include button-inverse($main-color, #fff);
+    @include button-inverse($main-color, $almost-white);
 }
-
+.btn-black-inverse {
+    @include button-inverse($almost-black, $almost-white);
+}
+.btn-white-inverse {
+    @include button-inverse($almost-white, $almost-black);
+}
 

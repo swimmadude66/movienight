@@ -11,7 +11,7 @@ export class FileReaderComponent implements OnInit {
     @Output('info') info: EventEmitter<FileInfo> = new EventEmitter<FileInfo>();
 
     unsupportedBrowser: boolean = false;
-    reading: boolean;
+    reading: boolean = false;
     progress: number = 0;
     error: string;
 
@@ -36,6 +36,7 @@ export class FileReaderComponent implements OnInit {
         evt.stopPropagation();
         evt.preventDefault();
         const file = files[0];
+        this.error = null;
         this._handleFile(file);
     }
 
@@ -53,6 +54,7 @@ export class FileReaderComponent implements OnInit {
         };
         const reader = new FileReader();
         reader.onerror = (e) => {
+            console.error(e);
             switch(e.target.error.code) {
                 case e.target.error.NOT_FOUND_ERR: {
                   this.error = 'File Not Found';
@@ -94,9 +96,4 @@ export class FileReaderComponent implements OnInit {
         }
         reader.readAsDataURL(file);
     }
-
-    private _errorHandler(evt) {
-        
-      }
-
 }

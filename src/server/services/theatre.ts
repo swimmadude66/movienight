@@ -65,14 +65,12 @@ export class TheatreService {
                 return this.getTheatreInfo(theatreId, access)
             }),
             switchMap(theatre => {
-                theatre.IsHost = theatre.Host === userId;
                 return this._socket.remoteJoin(socketId, theatreId)
                 .pipe(
                     map(_ => theatre)
                 );
             }),
             tap(theatre => {
-                delete theatre.IsHost;
                 this._socket.sendEvent(socketId, 'theatre_welcome', theatre);
                 this._socket.getRoomOccupants(theatreId)
                 .subscribe(
