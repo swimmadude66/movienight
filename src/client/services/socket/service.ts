@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import * as socketio from 'socket.io-client';
 import { AuthService } from '@services/auth/service';
@@ -42,7 +42,6 @@ export class SocketService extends Subscriber implements OnDestroy {
 
     ngOnDestroy() {
         super.ngOnDestroy();
-
         this._disconnect();
     }
 

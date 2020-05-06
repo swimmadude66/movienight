@@ -1,0 +1,70 @@
+@import '_variables';
+
+.player-container {
+    position: relative;
+    width:100%;
+
+    &::before {
+        content: "";
+        width: 0.1rem;
+        margin-left: -0.1rem;
+        float: left;
+        height: 0;
+        padding-top: 56.25%;
+    }
+
+    &::after { /* to clear float */
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .video-player {
+        display: block;
+        max-height: 100%;
+        height: 100%;
+        max-width: 100%;
+        width: 100%;
+        background-color: #000;
+    }
+
+    .video-controls {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 0.5rem;
+        opacity: 0;
+        transition: opacity .3s;
+        background:
+            linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,0.8) 100%),
+            linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 85%, rgba(0,0,0,0.8) 100%);
+        z-index: 2;
+
+        .bottom-controls {
+            position: absolute;
+            display: flex;
+            height: 4rem;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            padding: 1rem;
+
+            .control {
+                flex: 1;
+                color: $almost-white;
+            }
+
+            .play-button {
+                justify-self: flex-start;
+            }
+        }
+    }
+
+    &:hover {
+        .video-controls {
+            opacity: 1;
+        }
+    }
+}

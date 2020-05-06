@@ -1,5 +1,6 @@
 <div class="file-reader-container">
     <div class="dnd-area" (dragover)="handleDragOver($event)" (drop)="handleSelect($event)" *ngIf="!reading">
+        <p class="dnd-message">Drop a file here or select below</p>
         <div class="input-container">
             <input type="file" [attr.accepts]="accepts" (change)="handleSelect($event)">
         </div>

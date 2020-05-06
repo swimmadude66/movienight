@@ -5,5 +5,13 @@
     width: 100%;
     background-color: $almost-black;
     color: $almost-white;
-    
+    padding: 2rem 1rem;
+
+    .video-required-header {
+        text-align: center;
+    }
+}
+
+.player-area {
+    flex: 1;
 }

@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row size-limited">
-        <div class="host-view" *ngIf="theatre?.IsHost">
+        <!-- <div class="host-view" *ngIf="theatre?.IsHost">
             <div class="video-required" *ngIf=" !theatre.Video">
                 <h1 class="video-required-header">Please select a video to watch</h1>
                 <div class="file-upload-container" *ngIf="!videoPreview">
@@ -10,17 +10,34 @@
                     ></file-reader>
                 </div>
                 <div class="video-preview-container" *ngIf="videoPreview">
-                    <div class="preview-actions-container">
-                        <!-- Accept -> upload -->
-                        <!-- Change -> go back to reader -->
-                    </div>
                     <video
                         [src]="videoPreview"
                         controls="true"
                         width="100%"
                     ></video>
+                    <div class="preview-actions-container">
+                        <div class="cancel-container">
+                            <button class="btn btn-error" (click)="changeVideo()">
+                                Cancel
+                            </button>
+                        </div>
+                        <div class="accept-container">
+                            <button class="btn btn-success" (click)="uploadVideo()">
+                                Upload
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div> -->
+
+        <div class="player-area">
+            <video-player
+                [video]="{Format: 'video/mp4'}"
+                (ready)="playerReady($event)"
+                (resumed)="playerResumed()"
+                (ended)="playerEnded()"
+            ></video-player>
         </div>
     </div>
 </div>

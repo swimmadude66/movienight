@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {SharedModule} from '@modules/shared';
-import { TheatreComponent } from '@components';
+import { TheatreComponent, VideoPlayerComponent } from '@components';
 import { TheatreResolver } from '@resolvers';
 
 @NgModule({
@@ -15,7 +15,8 @@ import { TheatreResolver } from '@resolvers';
         )
     ],
     declarations: [
-        TheatreComponent
+        TheatreComponent,
+        VideoPlayerComponent,
     ]
 })
 export class TheatresLazyModule {}

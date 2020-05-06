@@ -1,0 +1,26 @@
+<div class="player-container" #playercontainer>
+    <video
+        #player
+        class="video-player"
+        preload="auto"
+        [src]="videoSrc"
+        [attr.type]="video?.Format"
+        [poster]="videoPoster"
+        [controls]="false"
+        [muted]="muted"
+        autoPictureInPicture="true"
+        (canplaythrough)="videoReady()"
+        (ended)="videoEnded()"
+        (playing)="playbackResumed()"
+    ></video>
+    <div class="video-controls">
+        <div class="bottom-controls">
+            <div class="play-button control" (click)="play()">
+                PLAY
+            </div>
+            <div class="fullscreen-button control" (click)="goFullScreen()">
+                fullscreen
+            </div>
+        </div>
+    </div>
+</div>

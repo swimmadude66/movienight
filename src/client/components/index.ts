@@ -5,6 +5,7 @@ export * from './home/component';
 export * from './inputgroup/component';
 export * from './loading_spinner/component';
 export * from './login/component';
+export * from './player/component';
 export * from './signup/component';
 export * from './spinner/component';
 export * from './theatre/component';

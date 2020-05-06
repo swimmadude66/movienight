@@ -83,9 +83,7 @@ export class FileReaderComponent implements OnInit {
             if (e.lengthComputable) {
                 const percentLoaded = Math.floor((e.loaded / e.total) * 100);
                 // Increase the progress bar length.
-                if (this.progress < 100) {
-                  this.progress = percentLoaded;
-                }
+                this.progress = percentLoaded;
             }
         };
         reader.onload = (e) => {

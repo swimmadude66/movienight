@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscriber } from '@core/';
 import { TheatreService } from '@services/';
-import { TheatreInfo } from '@models/theatre';
-import { FileInfo } from '@models';
+import { TheatreInfo, FileInfo } from '@models/';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { VideoPlayerComponent } from '@components/player/component';
 
 @Component({
     selector: 'theatre',
@@ -13,11 +13,17 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class TheatreComponent extends Subscriber implements OnInit {
 
-    isLoading: boolean = false;
-    
-    theatre: TheatreInfo;
+    @ViewChild('screen') set screen(s: ElementRef<VideoPlayerComponent>) {
+        if (s && s.nativeElement) {
+            this._screen = s.nativeElement;
+        }
+    }
 
+    isLoading: boolean = false;
+    theatre: TheatreInfo;
     videoPreview: SafeResourceUrl;
+
+    private _screen: VideoPlayerComponent;
 
     constructor(
         private _theatre: TheatreService,
@@ -57,7 +63,8 @@ export class TheatreComponent extends Subscriber implements OnInit {
         // TODO:
         // - wait until video is fully preloaded
         // - set a 2 second timeout
-        // - send Play event to server with current browser UTC timestamp 
+        // - send Play event to server with current browser UTC timestamp
+        this._screen.play();
     }
 
     onJoin() {
@@ -66,5 +73,25 @@ export class TheatreComponent extends Subscriber implements OnInit {
         // - preload ENTIRE file event: When file is `canPlayThrough`
         // - get video time by subtracting curr UTC timestamp from start time
         // - set video cursor to that point and play
+    }
+
+    changeVideo() {
+
+    }
+
+    uploadVideo() {
+
+    }
+
+    playerReady(ready: boolean) {
+        console.log('player ready', ready);
+    }
+
+    playerResumed() {
+        console.log('player resumed');
+    }
+
+    playerEnded() {
+        console.log('video ended');
     }
 }
