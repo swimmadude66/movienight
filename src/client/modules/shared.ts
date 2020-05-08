@@ -3,7 +3,7 @@ import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import {ShortenTextPipe, FloorNumberPipe} from '@pipes/';
+import {ShortenTextPipe, FloorNumberPipe, DurationPipe} from '@pipes/';
 import {AltTextDirective, ExternalLinkDirective} from '@directives/';
 import {InputGroupComponent, ToastComponent, SpinnerComponent, LoadingSpinnerComponent, FileReaderComponent} from '@components/';
 
@@ -19,6 +19,7 @@ import {InputGroupComponent, ToastComponent, SpinnerComponent, LoadingSpinnerCom
         ToastComponent,
         ShortenTextPipe,
         FloorNumberPipe,
+        DurationPipe,
         AltTextDirective,
         ExternalLinkDirective,
         SpinnerComponent,
@@ -36,6 +37,7 @@ import {InputGroupComponent, ToastComponent, SpinnerComponent, LoadingSpinnerCom
         ToastComponent,
         ShortenTextPipe,
         FloorNumberPipe,
+        DurationPipe,
         AltTextDirective,
         ExternalLinkDirective,
         SpinnerComponent,

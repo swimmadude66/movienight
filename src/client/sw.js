@@ -21,7 +21,7 @@ registerRoute(
         createHandlerBoundToURL('index.html')
     )
 ); // always serve index, just like when the internet is live
-    
+
 registerRoute(
     /^http:\/\/localhost(:[0-9]+)?\/browser-sync\//i,
     new NetworkOnly(),
@@ -30,22 +30,22 @@ registerRoute(
 
 registerRoute(
     /\/(admin\/)?api\//i,
-    new NetworkFirst({ 
-        networkTimeoutSeconds: 5, 
+    new NetworkFirst({
+        networkTimeoutSeconds: 5,
         cacheName: 'api-cache',
         plugins: [
             new CacheableResponsePlugin({
                 statuses: [200]
             }),
         ]
-    }), 
+    }),
     'GET'
 );
 
 registerRoute(
-    /\/[0-9]+\..*?\.min\.js$/i, 
-    new NetworkFirst({ 
-        networkTimeoutSeconds: 5, 
+    /\/[0-9]+\..*?\.min\.js$/i,
+    new NetworkFirst({
+        networkTimeoutSeconds: 5,
         cacheName: 'bundle-cache',
         plugins: [
             new CacheableResponsePlugin({
@@ -56,14 +56,14 @@ registerRoute(
                 purgeOnQuotaError: true // Will refetch on page load
             })
         ]
-    }), 
+    }),
     'GET'
 );
 
 registerRoute(
-    /\/assets\//i, 
-    new StaleWhileRevalidate({ 
-        cacheName: 'asset-cache', 
+    /\/assets\//i,
+    new StaleWhileRevalidate({
+        cacheName: 'asset-cache',
         plugins: [
             new CacheableResponsePlugin({
                 statuses: [200],
@@ -72,15 +72,15 @@ registerRoute(
                 maxAgeSeconds: 86400,
                 purgeOnQuotaError: true // they are images, get rid of them for more important stuff
             })
-        ] 
-    }), 
+        ]
+    }),
     'GET'
 );
 
 registerRoute(
-    /\/fonts\//i, 
-    new StaleWhileRevalidate({ 
-        cacheName: 'font-cache', 
+    /\/fonts\//i,
+    new StaleWhileRevalidate({
+        cacheName: 'font-cache',
         plugins: [
             new CacheableResponsePlugin({
                 statuses: [200],
@@ -89,8 +89,8 @@ registerRoute(
                 maxAgeSeconds: 86400,
                 purgeOnQuotaError: true // they are fonts, get rid of them for more important stuff
             })
-        ] 
-    }), 
+        ]
+    }),
     'GET'
 );
 
@@ -99,6 +99,14 @@ registerRoute(
     /^https:\/\/fonts\.googleapis\.com/i,
     new StaleWhileRevalidate({
         cacheName: 'google-fonts-stylesheets',
+    })
+);
+
+// Cache the Fontawesoms stylesheets with a stale-while-revalidate strategy.
+registerRoute(
+    /^https:\/\/kit(-pro)?\.fontawesome\.com/i,
+    new StaleWhileRevalidate({
+        cacheName: 'font-awesome',
     })
 );
 

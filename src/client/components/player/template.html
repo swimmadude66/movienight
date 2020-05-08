@@ -1,4 +1,4 @@
-<div class="player-container" #playercontainer>
+<div class="player-container" #playercontainer [ngClass]="{'controls': showControls}" (mousemove)="mouseMove($event)" (touchstart)="mouseMove($event)">
     <video
         #player
         class="video-player"
@@ -8,18 +8,33 @@
         [poster]="videoPoster"
         [controls]="false"
         [muted]="muted"
-        autoPictureInPicture="true"
         (canplaythrough)="videoReady()"
         (ended)="videoEnded()"
         (playing)="playbackResumed()"
     ></video>
-    <div class="video-controls">
+    <div class="video-controls" (click)="play()">
         <div class="bottom-controls">
-            <div class="play-button control" (click)="play()">
-                PLAY
+            <div class="volume control">
+                <div class="mute-button" (click)="toggleMute()">
+                    <span class="fas fa-volume" *ngIf="!muted"></span>
+                    <span class="fas fa-volume-mute" *ngIf="muted"></span>
+                </div>
+                <div class="volume-bar">
+                    <input type="range" min="0" max="100" step="1" [formControl]="volumeControl" />
+                </div>
             </div>
-            <div class="fullscreen-button control" (click)="goFullScreen()">
-                fullscreen
+            <div class="flex-spacer"></div>
+            <div class="fullscreen control" (click)="goFullScreen()">
+                <span class="fas fa-expand" *ngIf="!fullscreen"></span>
+                <span class="fas fa-compress" *ngIf="fullscreen"></span>
+            </div>
+        </div>
+        <div class="progress-bar-container">
+            <div class="curr-time">
+                {{currTime | duration}} / {{duration || 0 | duration}}
+            </div>
+            <div class="progress-outer">
+                <div class="progress-inner" [ngStyle]="{width: percentPlayed + '%'}"></div>
             </div>
         </div>
     </div>
