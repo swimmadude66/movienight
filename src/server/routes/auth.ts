@@ -50,7 +50,7 @@ module.exports = (APP_CONFIG: Config) => {
             .pipe(
                 switchMap(userResult => {
                     user = userResult;
-                    return sessionManager.createSession(user.UserId, JSON.stringify(req.useragent));
+                    return sessionManager.createSession(user.UserId, JSON.stringify(req['useragent']));
                 }),
             ).subscribe(
                 session => {
@@ -67,7 +67,7 @@ module.exports = (APP_CONFIG: Config) => {
 
     router.get('/valid', (req, res) => {
         return res.send({
-            Valid: !!res.locals.usersession, 
+            Valid: !!res.locals.usersession,
             Admin: !!(res.locals.usersession && res.locals.usersession.Role === 'admin'),
             Username: res.locals.usersession && res.locals.usersession.Username
         });

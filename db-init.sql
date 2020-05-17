@@ -54,12 +54,14 @@ CREATE TABLE IF NOT EXISTS `theatres` (
 
 CREATE TABLE IF NOT EXISTS `videos` (
   `VideoRowId` int NOT NULL AUTO_INCREMENT,
-  `VideoId` char(32) NOT NULL,
+  `VideoId` char(36) NOT NULL,
   `Title` varchar(255) NOT NULL,
   `Length` mediumint unsigned NOT NULL,
   `FileLocation` tinytext,
   `Format` tinytext NOT NULL,
   `Owner` char(36) NOT NULL,
+  `Complete` tinyint(1) NOT NULL DEFAULT '0',
+  `Expires` timestamp NOT NULL,
   `Created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`VideoId`),
   UNIQUE KEY `VideoId_UNIQUE` (`VideoId`),

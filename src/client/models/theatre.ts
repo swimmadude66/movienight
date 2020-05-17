@@ -16,4 +16,7 @@ export interface VideoInfo {
     Length: number; // length in seconds
     Format: string; // file type
     Owner?: string; // uploader
+
+    // front-end only
+    Url?: string; // S3 Url
 }

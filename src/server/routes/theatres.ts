@@ -1,20 +1,23 @@
 import {Router} from 'express';
-import {Config} from '../models/config';
+import { Config } from '../models/config';
 import { TheatreService } from '../services/theatre';
+import { switchMap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { VideoInfo } from '../models/theatre';
 
 module.exports = (APP_CONFIG: Config) => {
     const router = Router();
     const logger = APP_CONFIG.logger;
     const theatreService = new TheatreService(
-        APP_CONFIG.db, 
-        APP_CONFIG.socketService, 
-        APP_CONFIG.socketStore, 
+        APP_CONFIG.db,
+        APP_CONFIG.socketService,
+        APP_CONFIG.socketStore,
         logger
     );
 
     router.get('/:theatreId', (req, res) => {
         const theatreId = req.params.theatreId;
-        const access = req.query.a;
+        const access = req.query.a as string;
         if (!access) {
             return res.status(404).send({Error: 'Theatre not found'});
         }
@@ -49,7 +52,6 @@ module.exports = (APP_CONFIG: Config) => {
             }
         );
     });
-
 
     // AdminGate
     router.use((req, res, next) => {

@@ -11,19 +11,18 @@ let server_proc;
 function compileNode() {
     return src('./src/server/**/*.ts')
 	.pipe(ts_project()).js
-	.pipe(dest('dist/server/'));
+    .pipe(dest('dist/server/'));
 }
 
 function startServer(cb) {
     if (server_proc) {
         server_proc.kill();
-        server_proc = undefined;
     }
     server_proc = spawn('node', ['--inspect=5858', 'dist/server/app.js'], {
         cwd: __dirname,
         stdio: [0, 1, 2, 'ipc']
     });
-    return cb();
+    cb();
 }
 
 function watchServer() {
@@ -98,7 +97,7 @@ function watchWebpack(done) {
                     open: !(process.env.DOCKER_MODE)
                 })
             ]
-        }, 
+        },
         (err, stats) => {
         if (err) {
             console.error(err);

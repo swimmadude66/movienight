@@ -28,9 +28,13 @@ export class VideoPlayerComponent extends Subscriber {
         this._video = v;
         this._ready = false;
         this.ready.emit(false);
-        this.videoSrc = this._sanitizer.bypassSecurityTrustResourceUrl(`/assets/videos/dance.mp4`);
-        if (v['Poster']) {
-            this.videoPoster = this._sanitizer.bypassSecurityTrustResourceUrl(v['Poster']);
+        if (v) {
+            if (v.Url) {
+                this.videoSrc = this._sanitizer.bypassSecurityTrustResourceUrl(v.Url);
+            }
+            if (v['Poster']) {
+                this.videoPoster = this._sanitizer.bypassSecurityTrustResourceUrl(v['Poster']);
+            }
         }
     }
 

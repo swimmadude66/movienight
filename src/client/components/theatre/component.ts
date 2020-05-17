@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscriber } from '@core/';
-import { TheatreService } from '@services/';
-import { TheatreInfo, FileInfo } from '@models/';
+import { TheatreService, VideoService } from '@services/';
+import { TheatreInfo, FileInfo, VideoInfo } from '@models/';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { VideoPlayerComponent } from '@components/player/component';
 
@@ -13,11 +13,17 @@ import { VideoPlayerComponent } from '@components/player/component';
 })
 export class TheatreComponent extends Subscriber implements OnInit {
 
-    @ViewChild('screen') set screen(s: ElementRef<VideoPlayerComponent>) {
-        if (s && s.nativeElement) {
-            this._screen = s.nativeElement;
+    @ViewChild('screen') set screen(s /*: ElementRef<VideoPlayerComponent> | VideoPlayerComponent*/) {
+        if (s) {
+            if (s.nativeElement) {
+                this._screen = s.nativeElement;
+            } else {
+                this._screen = s as VideoPlayerComponent;
+            }
         }
     }
+
+    video: VideoInfo;
 
     isLoading: boolean = false;
     theatre: TheatreInfo;
@@ -27,6 +33,7 @@ export class TheatreComponent extends Subscriber implements OnInit {
 
     constructor(
         private _theatre: TheatreService,
+        private _video: VideoService,
         private _route: ActivatedRoute,
         private _santizer: DomSanitizer
     ) {
@@ -36,6 +43,22 @@ export class TheatreComponent extends Subscriber implements OnInit {
     ngOnInit() {
         console.log(this._route.snapshot.data);
         this.theatre = this._route.snapshot.data.theatre;
+        if (this.theatre && this.theatre.Video && this.theatre.Video.VideoId) {
+            this.addSubscription(
+                this._video.getVideoUrl(this.theatre.Video.VideoId)
+                .subscribe(
+                    response => {
+                        this.video = {
+                            ...this.theatre.Video,
+                            Url: response.Url
+                        }
+                    },
+                    err => {
+                        console.error(err);
+                    }
+                )
+            );
+        }
     }
 
     handleFileInfo(fileInfo: FileInfo) {

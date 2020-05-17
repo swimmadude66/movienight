@@ -8,3 +8,4 @@ export * from './ssr';
 export * from './theatre/service';
 export * from './toasts/service';
 export * from './webview/service';
+export * from './video/service';

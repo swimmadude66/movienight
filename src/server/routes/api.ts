@@ -3,7 +3,7 @@ import {Config} from '../models/config';
 
 module.exports = (APP_CONFIG: Config) => {
     const router = Router();
-    
+
     // PUBLIC
     router.use('/auth', require('./auth')(APP_CONFIG));
 
@@ -18,8 +18,7 @@ module.exports = (APP_CONFIG: Config) => {
 
     router.use('/sockets', require('./sockets')(APP_CONFIG));
     router.use('/theatres', require('./theatres')(APP_CONFIG));
-
-    // PRIVATE ROUTES GO BELOW HERE
+    router.use('/videos', require('./videos')(APP_CONFIG));
 
     // Return middleware router
     return router;

@@ -33,7 +33,8 @@
 
         <div class="player-area">
             <video-player
-                [video]="{Format: 'video/mp4'}"
+                #screen
+                [video]="video"
                 (ready)="playerReady($event)"
                 (resumed)="playerResumed()"
                 (ended)="playerEnded()"
