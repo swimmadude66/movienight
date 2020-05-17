@@ -1,12 +1,17 @@
 import * as cluster from 'cluster';
 import { Observable, of } from 'rxjs';
 
+interface SocketUser {
+    userId: string;
+    username: string
+}
+
 interface UserSocketMap {
     [userId: string]: string[];
 }
 
 interface SocketUserMap {
-    [socketId: string]: string;
+    [socketId: string]: SocketUser;
 }
 
 interface MapState {
@@ -25,7 +30,7 @@ export class SocketStoreService {
                 if (message && 'key' in message) {
                     switch (message.key) {
                         case 'connect': {
-                            this._masterConnect(message.socketId, message.userId);
+                            this._masterConnect(message.socketId, message.userId, message.username);
                             this._masterUpdateState();
                             break;
                         } case 'disconnectSocket': {
@@ -60,16 +65,16 @@ export class SocketStoreService {
                     }
                 }
             });
-            
+
             process.send({key: 'getSockets'}); // get initial state
         }
     }
 
-    connect(socketId: string, userId: string) {
+    connect(socketId: string, userId: string, username) {
         if (cluster.isMaster) {
-            this._masterConnect(socketId, userId);
+            this._masterConnect(socketId, userId, username);
         } else {
-            this._workerConnect(socketId, userId);
+            this._workerConnect(socketId, userId, username);
         }
     }
 
@@ -93,7 +98,7 @@ export class SocketStoreService {
         return of(this._userSockets[userId] || []);
     }
 
-    getUserBySocket(socketId: string): Observable<string> {
+    getUserBySocket(socketId: string): Observable<SocketUser> {
         return of(this._socketUser[socketId]); // userId or null
     }
 
@@ -112,8 +117,8 @@ export class SocketStoreService {
         }
     }
 
-    private _masterConnect(socketId: string, userId: string): void {
-        this._socketUser[socketId] = userId;
+    private _masterConnect(socketId: string, userId: string, username: string): void {
+        this._socketUser[socketId] = {userId, username};
         const currentSockets = this._userSockets[userId] || [];
         if (!currentSockets.length || currentSockets.indexOf(socketId) < 0) {
             currentSockets.push(socketId);
@@ -122,15 +127,15 @@ export class SocketStoreService {
     }
 
     private _masterDisconnectSocket(socketId: string) {
-        const userId = this._socketUser[socketId];
+        const user = this._socketUser[socketId];
         delete this._socketUser[socketId];
-        if (userId && userId.length) {
-            const remainingSockets = (this._userSockets[userId] || [])
+        if (user && user.userId && user.userId.length) {
+            const remainingSockets = (this._userSockets[user.userId] || [])
                 .filter(s => s!== socketId);
             if (remainingSockets.length) {
-                this._userSockets[userId] = remainingSockets;
+                this._userSockets[user.userId] = remainingSockets;
             } else {
-                delete this._userSockets[userId];
+                delete this._userSockets[user.userId];
             }
         }
     }
@@ -143,8 +148,8 @@ export class SocketStoreService {
         delete this._userSockets[userId];
     }
 
-    private _workerConnect(socketId: string, userId: string): void {
-        process.send({key: 'connect', socketId, userId});
+    private _workerConnect(socketId: string, userId: string, username): void {
+        process.send({key: 'connect', socketId, userId, username});
     }
 
     private _workerDisconnectSocket(socketId: string) {

@@ -7,7 +7,6 @@ import { DatabaseService } from './db';
 import { SocketService, SocketNamespace } from './sockets';
 import { LoggingService } from './logger';
 import { SocketStoreService } from './socket-store';
-import { RedisAdapter } from 'socket.io-redis';
 
 export class TheatreService {
 
@@ -85,6 +84,29 @@ export class TheatreService {
         );
     }
 
+    leaveTheatre(theatreId: string, userId: string, socketId: string): Observable<any> {
+        return this._socketStore.getSockets(userId)
+        .pipe(
+            switchMap(sockets => {
+                if (!sockets || !sockets.length || sockets.indexOf(socketId) < 0) {
+                    return throwError({Status: 400, Message: 'Invalid Credentials'});
+                }
+                return this._socket.remoteLeave(socketId, theatreId);
+            }),
+            tap(theatre => {
+                this._socket.getRoomOccupants(theatreId)
+                .subscribe(
+                    occ => {
+                        this._socket.sendEvent(theatreId, 'user_left', {UserCount: occ.length});
+                    },
+                    err => {
+                        this._logger.logError(err);
+                    }
+                )
+            })
+        );
+    }
+
     getTheatreInfo(theatreId: string, access: string): Observable<TheatreInfo> {
         return this._db.query<(TheatreInfo&VideoInfo)[]>(
             'Select * from `theatres` t'
@@ -127,32 +149,48 @@ export class TheatreService {
         );
     }
 
-    // private _initListener() {
-    //     this._io.on('connect', (socket) => {
-    //         console.log('socket connected to theatre space', socket.id);
-    //         socket.emit('id', socket.id);
+    startPlaying(theatreId: string, userId: string): Observable<any> {
+        const start = new Date();
+        const q = 'UPDATE `theatres` SET `StartTime`=? WHERE `TheatreId`=? AND `Host`=? AND `Active`=1 LIMIT 1;';
+        return this._db.query(q, [start, theatreId, userId])
+        .pipe(
+            catchError(err => {
+                this._logger.logError(err);
+                return throwError({Status: 500, Message: 'Could not start playback'});
+            }),
+            switchMap(results => {
+                if (!results || results.affectedRows !== 1) {
+                    return throwError({Status: 400, Message: 'Invalid theatre or host'});
+                }
+                if (results.changedRows !== 1) {
+                    return of(true); // do nothing, no change in information
+                }
+                this._socket.sendEvent(theatreId, 'start_playing', {StartTime: start.valueOf()});
+                return of(true);
+            })
+        );
+    }
 
-    //         socket.on('reconnect_attempt', () => {
-    //             socket['io'].opts.transports = ['websocket'];
-    //         });
-
-    //         socket.use((packet, next) => {
-    //             this._socketStore.getUserBySocket(socket.id)
-    //             .subscribe(
-    //                 user => {
-    //                     if (!user) {
-    //                         return next(new Error('Unauthorized'));
-    //                     }
-    //                     return next();
-    //                 },
-    //                 err => {
-    //                     this._logger.logError(err, 'Error verifying socket');
-    //                     return next(new Error('Unauthorized'));
-    //                 }
-    //             );
-    //         });
-    //     });
-    // }
+    stopPlaying(theatreId: string, userId: string): Observable<any> {
+        const q = 'UPDATE `theatres` SET `StartTime`=NULL WHERE `TheatreId`=? AND `Host`=? AND `Active`=1 LIMIT 1;';
+        return this._db.query(q, [theatreId, userId])
+        .pipe(
+            catchError(err => {
+                this._logger.logError(err);
+                return throwError({Status: 500, Message: 'Could not stop playback'});
+            }),
+            switchMap(results => {
+                if (!results || results.affectedRows !== 1) {
+                    return throwError({Status: 400, Message: 'Invalid theatre or host'});
+                }
+                if (results.changedRows !== 1) {
+                    return of(true); // do nothing, no change in information
+                }
+                this._socket.sendEvent(theatreId, 'stop_playing', {StartTime: null});
+                return of(true);
+            })
+        );
+    }
 
     private _mapDBReponseToTheatre(theatreRow: TheatreInfo&VideoInfo): TheatreInfo {
         const theatre: TheatreInfo = {
@@ -169,7 +207,7 @@ export class TheatreService {
                 Title: theatreRow.Title,
                 FileLocation: theatreRow.FileLocation,
                 Format: theatreRow.Format,
-                Length: theatreRow.Length
+                Length: theatreRow.Length,
             };
             theatre.Video = video;
         }

@@ -30,6 +30,7 @@ export class VideoPlayerComponent extends Subscriber {
         this.ready.emit(false);
         if (v) {
             if (v.Url) {
+                this.loading = true;
                 this.videoSrc = this._sanitizer.bypassSecurityTrustResourceUrl(v.Url);
             }
             if (v['Poster']) {
@@ -38,9 +39,14 @@ export class VideoPlayerComponent extends Subscriber {
         }
     }
 
+    @Input('isHost') isHost: boolean = false;
+
     @Output('ready') ready: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output('resumed') resumed: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output('ended') ended: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output('hostStart') hostStart: EventEmitter<VideoInfo> = new EventEmitter<VideoInfo>();
+    @Output('hostStop') hostStop: EventEmitter<VideoInfo> = new EventEmitter<VideoInfo>();
+    @Output('hostSelect') hostSelect: EventEmitter<VideoInfo> = new EventEmitter<VideoInfo>();
 
     volumeControl = new FormControl(100);
 
@@ -51,8 +57,13 @@ export class VideoPlayerComponent extends Subscriber {
     premuteVolume: number = 100;
 
     currTime: number = 0;
-    duration: number = 0;
+    length: number = 0; // duration, but shadows pipe name
     percentPlayed: number = 0;
+
+    starting: boolean;
+    stopping: boolean;
+    playing: boolean;
+    loading: boolean;
 
     private _ended: boolean = false;
 
@@ -131,6 +142,20 @@ export class VideoPlayerComponent extends Subscriber {
         if (this._player && this.videoSrc && this._ready) {
             this._ended = false;
             this._player.play();
+            this.playing = true;
+            this.starting = false;
+        }
+    }
+
+    stop() {
+        if (this._player) {
+            this._player.pause();
+            this._player.currentTime = 0;
+            this.currTime = 0;
+            this._ended = true;
+            this.playing = false;
+            this.stopping = false;
+            this._cancelProgress();
         }
     }
 
@@ -183,18 +208,53 @@ export class VideoPlayerComponent extends Subscriber {
     videoReady() {
         this._ready = true;
         this.ready.emit(true);
+        this.loading = false;
 
-        this.duration = this._player.duration;
+        this.length = this._player.duration;
     }
 
     videoEnded() {
+        this.playing = false;
         this._ended = true;
         this.percentPlayed = 100;
         this.ended.emit(true);
     }
 
+    playerWaiting() {
+        this.resumed.emit(false);
+        this.playing = false;
+    }
+
     playbackResumed() {
         this.resumed.emit(true);
+        this._cancelProgress();
+        this._progressSub = timer(0, 50)
+        .pipe(
+            takeWhile(_ => !this._ended)
+        ).subscribe(
+            _ => {
+                this.currTime = this.getCurrentTime();
+                this.percentPlayed = Math.floor((this.currTime / this.length) * 100);
+            }
+        )
+    }
+
+    // Host-only controls
+    startVideo() {
+        this.starting = true;
+        this.hostStart.emit(this.video);
+    }
+
+    stopVideo() {
+        this.stopping = true;
+        this.hostStop.emit(this.video);
+    }
+
+    selectVideo() {
+        this.hostSelect.emit(this.video);
+    }
+
+    private _cancelProgress() {
         if (this._progressSub) {
             try {
                 this._progressSub.unsubscribe();
@@ -203,15 +263,6 @@ export class VideoPlayerComponent extends Subscriber {
                 // do nothing
             }
         }
-        this._progressSub = timer(0, 100)
-        .pipe(
-            takeWhile(_ => !this._ended)
-        ).subscribe(
-            _ => {
-                this.currTime = this.getCurrentTime();
-                this.percentPlayed = Math.floor((this.currTime / this.duration) * 100);
-            }
-        )
     }
 
 }

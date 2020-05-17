@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `theatres` (
   `TheatreRowId` int NOT NULL AUTO_INCREMENT,
   `TheatreId` char(32) NOT NULL,
   `Name` tinytext NOT NULL,
-  `StartTime` int DEFAULT NULL,
+  `StartTime` TIMESTAMP DEFAULT NULL,
   `Host` char(36) NOT NULL,
   `VideoId` char(32) DEFAULT NULL,
   `Access` char(16) NOT NULL,

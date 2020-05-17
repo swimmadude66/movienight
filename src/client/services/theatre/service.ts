@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { map, distinctUntilChanged, timeout, switchMap, first } from 'rxjs/operators';
 import { HttpCacheService } from '@services/caching';
 import { TheatreInfo } from '@models/theatre';
@@ -13,6 +13,8 @@ import { SocketService } from '@services/socket/service';
 export class TheatreService extends Subscriber {
 
     private _socketId: string;
+
+    private _theatreEvents: ReplaySubject<{key: string, data: any}> = new ReplaySubject<{key: string, data: any}>(10);
 
     constructor(
         private _http: HttpClient,
@@ -37,6 +39,14 @@ export class TheatreService extends Subscriber {
         );
     }
 
+    observeEvents(): Observable<{key: string, data: any}> {
+        return this._socket.observeSocketId()
+        .pipe(
+            first(sid => !!sid && sid.length > 0),
+            switchMap(_ => this._theatreEvents)
+        );
+    }
+
     getOwnedTheatres(): Observable<TheatreInfo[]> {
         return this._cache.cacheRequest(
             `my_theatres`,
@@ -54,12 +64,16 @@ export class TheatreService extends Subscriber {
             timeout(2000), // 2s timeout to get first connection
             switchMap(socketId =>
                 this._http.post<{Theatre: TheatreInfo}>(
-                    `/api/theatres/join/${theatreId}`, 
+                    `/api/theatres/${theatreId}/join`,
                     {Access: access, SocketId: socketId}
                 )
             ),
             map(res => res.Theatre)
         );
+    }
+
+    leaveTheatre(theatreId: string): Observable<any> {
+        return this._http.delete(`/api/theatres/${theatreId}/leave`)
     }
 
     createTheatre(name: string): Observable<TheatreInfo> {
@@ -70,13 +84,28 @@ export class TheatreService extends Subscriber {
         );
     }
 
-    private _initListener() {
-        this._socket.on('theatre_welcome', (data) => {
-            console.log(data);
-        });
+    startMovie(theatreId: string): Observable<any> {
+        return this._http.post(`/api/theatres/${theatreId}/start`, {});
+    }
 
-        this._socket.on('user_join', (data) => {
-            console.log(data);
-        });
+    stopMovie(theatreId: string): Observable<any> {
+        return this._http.post(`/api/theatres/${theatreId}/stop`, {});
+    }
+
+    private _initListener() {
+        const theatreEvents = [
+            'theatre_welcome',
+            'user_join',
+            'user_left',
+            'start_playing',
+            'stop_playing'
+        ]
+       this._pipeEvents(theatreEvents);
+    }
+
+    private _pipeEvents(keys: string[]) {
+        keys.forEach(k => {
+            this._socket.on(k, (data) => this._theatreEvents.next({key: k, data}));
+        })
     }
 }

@@ -32,7 +32,7 @@ export class VideoService {
         return this._cache.cacheRequest(
             `video_url_${videoId}`,
             this._http.get<{Url: string}>(`/api/videos/${videoId}`),
-            {cacheTime: 60 * 60 * 1000}
+            {cacheTime: 5 * 60 * 1000} // 5 min
         );
     }
 
@@ -43,7 +43,7 @@ export class VideoService {
             formData.append(f, params.fields[f]);
         });
         formData.append('file', file, file.name);
-        return this._http.post<ProgressEvent>(params.url, formData, {
+        return this._http.post<any>(params.url, formData, {
             observe: 'events',
             reportProgress: true,
         });

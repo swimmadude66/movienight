@@ -56,6 +56,13 @@ module.exports = (APP_CONFIG: Config) => {
         if (!body || !body.Title || !body.Format || !body.Length || !body.FileSize || !body.FileName) {
             return res.status(400).send({Error: 'Title, Format, Length, FileSize, and FileName are required'});
         }
+        // !/^\s*video\//i.test(body.Format)
+        if (!/\s*video\/mp4/i.test(body.Format)) {
+            return res.status(415).send({Error: 'only mp4 videos are supported right now'});
+        }
+        if (body.FileSize > 10485760) { // 10MB
+            return res.status(413).send({Error: 'Cannot accept files larger than 10MB'});
+        }
         storage.createVideoUpload(userId, body)
         .subscribe(
             response => {

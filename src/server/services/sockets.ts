@@ -43,8 +43,8 @@ export class SocketService {
     disconnectSocket(socketId: string): Observable<any> {
         return Observable.create(obs => {
             (this._io.of('/').adapter as RedisAdapter).remoteDisconnect(
-                socketId, 
-                true, 
+                socketId,
+                true,
                 (err) => {
                     if (err) {
                         return obs.error({Status: 400, Message: 'Unknown socket'})
@@ -66,6 +66,19 @@ export class SocketService {
                 if (err) {
                     this._logger.logError(err);
                     return obs.error({Status: 500, Message: 'Could not join room'});
+                }
+                obs.next(true);
+                return obs.complete();
+            })
+        });
+    }
+
+    remoteLeave(socketId: string, room: string): Observable<any> {
+        return Observable.create(obs => {
+            (this._io.of('/').adapter as RedisAdapter).remoteLeave(socketId, room, err => {
+                if (err) {
+                    this._logger.logError(err);
+                    return obs.error({Status: 500, Message: 'Could not leave room'});
                 }
                 obs.next(true);
                 return obs.complete();

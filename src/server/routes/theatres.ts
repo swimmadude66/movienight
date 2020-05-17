@@ -15,6 +15,44 @@ module.exports = (APP_CONFIG: Config) => {
         logger
     );
 
+
+    router.post('/:theatreId/join', (req, res) => {
+        const theatreId = req.params.theatreId;
+        const body = req.body;
+        const userId = res.locals.usersession.UserId;
+        if (!body || !body.SocketId || !body.Access) {
+            return res.status(400).send({Error: 'SocketId and Access are required'});
+        }
+        const socketId = body.SocketId.trim();
+        const access = body.Access.trim();
+        theatreService.joinTheatre(theatreId, access, userId, socketId)
+        .subscribe(
+            theatre => {
+                theatre.IsHost = (theatre.Host === userId);
+                return res.send({Theatre: theatre});
+            },
+            err => {
+                return res.status(err.Status || 500).send({Error: err.Message || 'Could not get theatre info'});
+            }
+        );
+    });
+
+    router.delete('/:theatreId/leave', (req, res) => {
+        const theatreId = req.params.theatreId;
+        const userId = res.locals.usersession.UserId;
+        const body = req.body;
+        if (!body || !body.SocketId) {
+            return res.status(400).send({Error: 'SocketId is required'});
+        }
+        theatreService.leaveTheatre(theatreId, userId, body.SocketId)
+        .subscribe(
+            _ => res.send({Message: 'Left theatre'}),
+            err => {
+                return res.status(err.Status || 500).send({Error: err.Message || 'Could not leave theatre'});
+            }
+        )
+    })
+
     router.get('/:theatreId', (req, res) => {
         const theatreId = req.params.theatreId;
         const access = req.query.a as string;
@@ -32,23 +70,26 @@ module.exports = (APP_CONFIG: Config) => {
         );
     });
 
-    router.post('/join/:theatreId', (req, res) => {
+    router.post('/:theatreId/start', (req, res) => {
         const theatreId = req.params.theatreId;
-        const body = req.body;
         const userId = res.locals.usersession.UserId;
-        if (!body || !body.SocketId || !body.Access) {
-            return res.status(400).send({Error: 'SocketId and Access are required'});
-        }
-        const socketId = body.SocketId.trim();
-        const access = body.Access.trim();
-        theatreService.joinTheatre(theatreId, access, userId, socketId)
+        theatreService.startPlaying(theatreId, userId)
         .subscribe(
-            theatre => {
-                theatre.IsHost = (theatre.Host === userId);
-                return res.send({Theatre: theatre});
-            },
+            _ => res.send({Message: 'Now Playing!'}),
             err => {
-                return res.status(err.Status || 500).send({Error: err.Message || 'Could not get theatre info'});
+                return res.status(err.Status || 500).send({Error: err.Message || 'Could not start playback'});
+            }
+        );
+    });
+
+    router.post('/:theatreId/stop', (req, res) => {
+        const theatreId = req.params.theatreId;
+        const userId = res.locals.usersession.UserId;
+        theatreService.stopPlaying(theatreId, userId)
+        .subscribe(
+            _ => res.send({Message: 'Video Stopped!'}),
+            err => {
+                return res.status(err.Status || 500).send({Error: err.Message || 'Could not stop playback'});
             }
         );
     });

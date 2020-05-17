@@ -35,9 +35,13 @@
             <video-player
                 #screen
                 [video]="video"
+                [isHost]="theatre?.IsHost"
                 (ready)="playerReady($event)"
-                (resumed)="playerResumed()"
+                (resumed)="playerResumed($event)"
                 (ended)="playerEnded()"
+                (hostStart)="broadcastStart($event)"
+                (hostStop)="broadcastStop($event)"
+                (hostSelect)="selectVideo($event)"
             ></video-player>
         </div>
     </div>

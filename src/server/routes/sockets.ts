@@ -13,7 +13,8 @@ module.exports = (APP_CONFIG: Config) => {
             return res.status(400).send({Error: 'SocketId is required'});
         }
         const userId = res.locals.usersession.UserId;
-        socketStore.connect(body.SocketId, userId);
+        const username = res.locals.usersession.Username;
+        socketStore.connect(body.SocketId, userId, username);
         return res.send({Message: 'Socket Registered'});
     });
 
@@ -27,7 +28,7 @@ module.exports = (APP_CONFIG: Config) => {
         }
         return res.send({Message: 'Socket Unregistered'});
     });
-    
+
 
     // Return middleware router
     return router;

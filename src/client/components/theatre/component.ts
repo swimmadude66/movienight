@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscriber } from '@core/';
 import { TheatreService, VideoService } from '@services/';
@@ -11,7 +11,7 @@ import { VideoPlayerComponent } from '@components/player/component';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class TheatreComponent extends Subscriber implements OnInit {
+export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
 
     @ViewChild('screen') set screen(s /*: ElementRef<VideoPlayerComponent> | VideoPlayerComponent*/) {
         if (s) {
@@ -29,6 +29,8 @@ export class TheatreComponent extends Subscriber implements OnInit {
     theatre: TheatreInfo;
     videoPreview: SafeResourceUrl;
 
+    playing: boolean;
+
     private _screen: VideoPlayerComponent;
 
     constructor(
@@ -43,22 +45,36 @@ export class TheatreComponent extends Subscriber implements OnInit {
     ngOnInit() {
         console.log(this._route.snapshot.data);
         this.theatre = this._route.snapshot.data.theatre;
-        if (this.theatre && this.theatre.Video && this.theatre.Video.VideoId) {
-            this.addSubscription(
-                this._video.getVideoUrl(this.theatre.Video.VideoId)
-                .subscribe(
-                    response => {
-                        this.video = {
-                            ...this.theatre.Video,
-                            Url: response.Url
+        if (this.theatre) {
+            if (this.theatre.Video && this.theatre.Video.VideoId) {
+                this.addSubscription(
+                    this._video.getVideoUrl(this.theatre.Video.VideoId)
+                    .subscribe(
+                        response => {
+                            this.video = {
+                                ...this.theatre.Video,
+                                Url: response.Url
+                            }
+                        },
+                        err => {
+                            console.error(err);
                         }
-                    },
-                    err => {
-                        console.error(err);
-                    }
-                )
+                    )
+                );
+            }
+            this.addSubscription(
+                this._theatre.observeEvents()
+                .subscribe(event => {
+                    this._handleTheatreEvent(event);
+                })
             );
         }
+
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        this._theatre.leaveTheatre(this.theatre.TheatreId);
     }
 
     handleFileInfo(fileInfo: FileInfo) {
@@ -82,12 +98,12 @@ export class TheatreComponent extends Subscriber implements OnInit {
         // - attach to theatre
     }
 
-    playMovie() {
+    playMovie(seekTime: number) {
         // TODO:
-        // - wait until video is fully preloaded
-        // - set a 2 second timeout
-        // - send Play event to server with current browser UTC timestamp
+        // - set a 2 second timeout/countdown?
+        this._screen.seekTo(seekTime);
         this._screen.play();
+        this.playing = true;
     }
 
     onJoin() {
@@ -107,14 +123,80 @@ export class TheatreComponent extends Subscriber implements OnInit {
     }
 
     playerReady(ready: boolean) {
-        console.log('player ready', ready);
+        if (ready && !this.playing) {
+            this._playWhenReady();
+        }
     }
 
-    playerResumed() {
-        console.log('player resumed');
+    playerResumed(resumed: boolean) {
+        if (resumed) {
+            if (!this.playing) {
+                this._playWhenReady();
+            }
+        } else {
+            this.playing = false;
+        }
     }
 
     playerEnded() {
         console.log('video ended');
+        this.playing = false;
+    }
+
+    // Host events
+    broadcastStart(video: VideoInfo) {
+        this.addSubscription(
+            this._theatre.startMovie(this.theatre.TheatreId)
+            .subscribe(
+                _ => _,
+                err => {
+                    console.error(err);
+                }
+            )
+        );
+
+    }
+
+    broadcastStop(video: VideoInfo) {
+        this.addSubscription(
+            this._theatre.stopMovie(this.theatre.TheatreId)
+            .subscribe(
+                _ => _,
+                err => {
+                    console.error(err);
+                }
+            )
+        );
+    }
+
+    selectVideo(video: VideoInfo) {
+        // open the video selection modal
+    }
+
+    private _handleTheatreEvent(event: {key: string, data: any}) {
+        const now = new Date().valueOf();
+        if (event.key === 'start_playing') {
+            const startTime: number = event.data.StartTime;
+            const seekTime = Math.floor(Math.max(0, now - startTime)/1000);
+            this.playMovie(seekTime);
+        } else if (event.key === 'theatre_welcome') {
+            this.theatre = {...this.theatre, ...event.data};
+        } else if (event.key === 'stop_playing') {
+            this.theatre.StartTime = null;
+            if (this._screen) {
+                this._screen.stop();
+            }
+        }
+    }
+
+    private _playWhenReady() {
+        if (this.theatre && this.theatre.StartTime && this.theatre.Video) {
+            const now = new Date().valueOf();
+            const seekTime = Math.floor(Math.max(0, now - new Date(this.theatre.StartTime).valueOf())/1000);
+            if (seekTime < this.theatre.Video.Length) {
+                console.log('resuming movie at', seekTime);
+                this.playMovie(seekTime);
+            }
+        }
     }
 }

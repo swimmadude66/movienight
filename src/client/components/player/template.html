@@ -1,8 +1,12 @@
 <div class="player-wrapper">
-    <div class="player-container" #playercontainer [ngClass]="{'controls': showControls}" (mousemove)="mouseMove($event)" (touchstart)="mouseMove($event)" *ngIf="videoSrc">
+    <div class="loading-container" *ngIf="loading">
+        <spinner></spinner>
+    </div>
+    <div class="player-container" #playercontainer [ngClass]="{'controls': !!video && showControls}" (mousemove)="mouseMove($event)" (touchstart)="mouseMove($event)">
         <video
             #player
             class="video-player"
+            [ngClass]="{'hidden': !video}"
             preload="auto"
             [src]="videoSrc"
             [attr.type]="video?.Format"
@@ -11,10 +15,36 @@
             (canplaythrough)="videoReady()"
             (ended)="videoEnded()"
             (playing)="playbackResumed()"
+            (waiting)="playerWaiting()"
         ></video>
-        <!-- (canplaythrough)="videoReady()" -->
-        <div class="video-controls" (click)="play()">
-            <div class="bottom-controls">
+        <div class="no-video-container" *ngIf="!video">
+            <!-- Put information to user/host here -->
+        </div>
+        <div class="video-controls">
+            <div class="host-controls" *ngIf="isHost">
+                <div class="start-stop-container">
+                    <div class="button-container">
+                        <button class="btn btn-primary" (click)="startVideo()" [disabled]="starting" *ngIf="!playing">
+                            Start Movie <span class="fas fa-play"></span>
+                        </button>
+                        <!--  -->
+                        <button class="btn btn-error" (click)="stopVideo()" [disabled]="stopping" *ngIf="playing">
+                            Stop Movie <span class="fas fa-stop"></span>
+                        </button>
+                    </div>
+                </div>
+                <!--  -->
+                <div class="flex-spacer"></div>
+                <!--  -->
+                <div class="change-video-container">
+                    <div class="button-container" *ngIf="!playing">
+                        <button class="btn btn-white" (click)="selectVideo()">
+                            Select Video <span class="fas fa-vhs"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-controls" *ngIf="video">
                 <div class="volume control">
                     <div class="mute-button" (click)="toggleMute()">
                         <span class="fas fa-volume" *ngIf="!muted"></span>
@@ -32,7 +62,7 @@
             </div>
             <div class="progress-bar-container">
                 <div class="curr-time">
-                    {{currTime | duration}} / {{duration || 0 | duration}}
+                    {{currTime | duration}} / {{length || 0 | duration}}
                 </div>
                 <div class="progress-outer">
                     <div class="progress-inner" [ngStyle]="{width: percentPlayed + '%'}"></div>
