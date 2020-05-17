@@ -1,4 +1,5 @@
 export * from './app/component';
+export * from './chat/component';
 export * from './filereader/component';
 export * from './header/component';
 export * from './home/component';

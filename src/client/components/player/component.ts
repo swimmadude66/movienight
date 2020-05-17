@@ -40,6 +40,7 @@ export class VideoPlayerComponent extends Subscriber {
     }
 
     @Input('isHost') isHost: boolean = false;
+    @Input('startTime') startTime: string | Date | number;
 
     @Output('ready') ready: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output('resumed') resumed: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -73,6 +74,7 @@ export class VideoPlayerComponent extends Subscriber {
 
     fullscreen: boolean = false;
     showControls: boolean = false;
+    interactionRequired: boolean = false;
 
     private _player: HTMLVideoElement;
     private _playerContainer: HTMLDivElement;
@@ -140,10 +142,20 @@ export class VideoPlayerComponent extends Subscriber {
 
     play() {
         if (this._player && this.videoSrc && this._ready) {
+            const now = new Date().valueOf();
+            const seekTime = Math.floor(Math.max(0, now - new Date(this.startTime).valueOf())/1000);
+            if (seekTime > this.video.Length) {
+                return; // movie is over
+            }
+            this.seekTo(seekTime);
             this._ended = false;
-            this._player.play();
             this.playing = true;
             this.starting = false;
+            this._player.play()
+            .then(
+                _ => this.interactionRequired = false,
+                err => this.interactionRequired = true
+            );
         }
     }
 

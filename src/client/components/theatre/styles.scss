@@ -12,7 +12,18 @@
     }
 }
 
-.player-area {
-    flex: 1;
-    max-height: 100%;
+.theatre-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    height: calc(100vh - #{$header-height});
+    overflow: hidden;
+
+    .player-area {
+        flex: 0 1 100%;
+        height: 100%;
+    }
+    .chat-container {
+        flex: 0 1 15rem;
+        height: 100%;
+    }
 }

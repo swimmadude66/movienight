@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscriber } from '@core/';
-import { TheatreService, VideoService } from '@services/';
-import { TheatreInfo, FileInfo, VideoInfo } from '@models/';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Subscriber } from '@core/';
+import { TheatreInfo, FileInfo, VideoInfo } from '@models/';
+import { TheatreService, VideoService, ToastService } from '@services/';
 import { VideoPlayerComponent } from '@components/player/component';
 
 @Component({
@@ -13,10 +13,10 @@ import { VideoPlayerComponent } from '@components/player/component';
 })
 export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
 
-    @ViewChild('screen') set screen(s /*: ElementRef<VideoPlayerComponent> | VideoPlayerComponent*/) {
+    @ViewChild('screen') set screen(s : ElementRef<VideoPlayerComponent> | VideoPlayerComponent) {
         if (s) {
-            if (s.nativeElement) {
-                this._screen = s.nativeElement;
+            if (s['nativeElement']) {
+                this._screen = s['nativeElement'];
             } else {
                 this._screen = s as VideoPlayerComponent;
             }
@@ -29,13 +29,15 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
     theatre: TheatreInfo;
     videoPreview: SafeResourceUrl;
 
-    playing: boolean;
+    playing: boolean = false;
+    ready: boolean = false;
 
     private _screen: VideoPlayerComponent;
 
     constructor(
         private _theatre: TheatreService,
         private _video: VideoService,
+        private _toast: ToastService,
         private _route: ActivatedRoute,
         private _santizer: DomSanitizer
     ) {
@@ -89,15 +91,6 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
         return `${location.protocol}://${location.host}/theatres/${this.theatre.TheatreId}?a=${this.theatre.Access}`;
     }
 
-    setVideo() {
-        // TODO
-        // - Upload video
-        // - preload video in to player
-        // - fetch filetype and length
-        // - allow setting of name
-        // - attach to theatre
-    }
-
     playMovie(seekTime: number) {
         // TODO:
         // - set a 2 second timeout/countdown?
@@ -106,37 +99,22 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
         this.playing = true;
     }
 
-    onJoin() {
-        // TODO:
-        // - get video info + server timestamp at request fill time
-        // - preload ENTIRE file event: When file is `canPlayThrough`
-        // - get video time by subtracting curr UTC timestamp from start time
-        // - set video cursor to that point and play
-    }
-
-    changeVideo() {
-
-    }
-
-    uploadVideo() {
-
-    }
-
     playerReady(ready: boolean) {
+        this.ready = ready;
         if (ready && !this.playing) {
             this._playWhenReady();
         }
     }
 
-    playerResumed(resumed: boolean) {
-        if (resumed) {
-            if (!this.playing) {
-                this._playWhenReady();
-            }
-        } else {
-            this.playing = false;
-        }
-    }
+    // playerResumed(resumed: boolean) {
+    //     if (resumed) {
+    //         if (!this.playing) {
+    //             this._playWhenReady();
+    //         }
+    //     } else {
+    //         this.playing = false;
+    //     }
+    // }
 
     playerEnded() {
         console.log('video ended');
@@ -151,6 +129,9 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
                 _ => _,
                 err => {
                     console.error(err);
+                    if (this._screen) {
+                        this._screen.starting = false;
+                    }
                 }
             )
         );
@@ -164,13 +145,30 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
                 _ => _,
                 err => {
                     console.error(err);
+                    if (this._screen) {
+                        this._screen.stopping = false;
+                    }
                 }
             )
         );
     }
 
     selectVideo(video: VideoInfo) {
+        // TODO
         // open the video selection modal
+    }
+
+    setVideo() {
+        // TODO
+        // - Upload video
+        // - preload video in to player
+        // - fetch filetype and length
+        // - allow setting of name
+        // - attach to theatre
+    }
+
+    uploadVideo() {
+
     }
 
     private _handleTheatreEvent(event: {key: string, data: any}) {
@@ -180,8 +178,12 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
             const seekTime = Math.floor(Math.max(0, now - startTime)/1000);
             this.playMovie(seekTime);
         } else if (event.key === 'theatre_welcome') {
+            this._toast.info('Putting you in sync with the others...', 'Welcome!');
+            console.log('got welcome', event);
             this.theatre = {...this.theatre, ...event.data};
+            this._playWhenReady();
         } else if (event.key === 'stop_playing') {
+            this._toast.info('Host has stopped the video', 'Video Stopped');
             this.theatre.StartTime = null;
             if (this._screen) {
                 this._screen.stop();
@@ -190,11 +192,10 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
     }
 
     private _playWhenReady() {
-        if (this.theatre && this.theatre.StartTime && this.theatre.Video) {
+        if (this.theatre && this.theatre.StartTime && this.theatre.Video && this.ready) {
             const now = new Date().valueOf();
             const seekTime = Math.floor(Math.max(0, now - new Date(this.theatre.StartTime).valueOf())/1000);
             if (seekTime < this.theatre.Video.Length) {
-                console.log('resuming movie at', seekTime);
                 this.playMovie(seekTime);
             }
         }

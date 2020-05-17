@@ -2,7 +2,7 @@
     <div class="loading-container" *ngIf="loading">
         <spinner></spinner>
     </div>
-    <div class="player-container" #playercontainer [ngClass]="{'controls': !!video && showControls}" (mousemove)="mouseMove($event)" (touchstart)="mouseMove($event)">
+    <div class="player-container" #playercontainer [ngClass]="{'controls': !!video && (showControls || interactionRequired)}" (mousemove)="mouseMove($event)" (touchstart)="mouseMove($event)">
         <video
             #player
             class="video-player"
@@ -14,8 +14,6 @@
             [muted]="muted"
             (canplaythrough)="videoReady()"
             (ended)="videoEnded()"
-            (playing)="playbackResumed()"
-            (waiting)="playerWaiting()"
         ></video>
         <div class="no-video-container" *ngIf="!video">
             <!-- Put information to user/host here -->
@@ -43,6 +41,12 @@
                         </button>
                     </div>
                 </div>
+            </div>
+            <div class="autoplay-container" *ngIf="interactionRequired" (click)="play()">
+                <div class="play-button-container">
+                    <span class="fas fa-play"></span>
+                </div>
+                <p class="autoplay-message">Chrome sucks at autoplay, so they require you press this button to watch with us</p>
             </div>
             <div class="bottom-controls" *ngIf="video">
                 <div class="volume control">

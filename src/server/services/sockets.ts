@@ -127,6 +127,19 @@ export class SocketService {
                     }
                 );
             });
+
+            socket.on('chat', (msg: {Message: string, TheatreId: string}) => {
+                console.log('got chat message', msg);
+                this._socketStore.getUserBySocket(socket.id)
+                .subscribe(
+                    user => {
+                        this._io.to(msg.TheatreId).emit('chat_message', {Username: user.username, UserId: user.userId, Message: msg.Message})
+                    },
+                    err => {
+                        console.error('unknown user tried to send a message');
+                    }
+                )
+            });
         });
     }
 

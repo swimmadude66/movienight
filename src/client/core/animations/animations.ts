@@ -10,6 +10,13 @@ export const slideInTop = trigger('slideInTop', [
     ])
 ]);
 
+export const slideInBottom = trigger('slideInBottom', [
+    transition(':enter', [
+      style({opacity: 0, transform: 'translate3d(0, 2rem, 0)'}),
+      animate(300)
+    ])
+]);
+
 export const toast = trigger('toast', [
     transition(':enter', [
         style({bottom: '-50rem', opacity:0}),

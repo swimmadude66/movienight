@@ -4,6 +4,7 @@ import {NavigationRoute, registerRoute, setCatchHandler} from 'workbox-routing';
 import {NetworkOnly, NetworkFirst, StaleWhileRevalidate, CacheFirst} from 'workbox-strategies';
 import {CacheableResponsePlugin} from 'workbox-cacheable-response';
 import {ExpirationPlugin} from 'workbox-expiration';
+import {RangeRequestsPlugin} from 'workbox-range-requests';
 
 skipWaiting();
 clientsClaim();
@@ -125,6 +126,16 @@ registerRoute(
             }),
         ],
     })
+);
+
+// allow pass-through of ranges
+registerRoute(
+    /^https:\/\/.*\/videos/i,
+    new CacheFirst({
+        cacheName: 'videofiles',
+        plugins: [new RangeRequestsPlugin()]
+    }),
+    'GET'
 );
 
 

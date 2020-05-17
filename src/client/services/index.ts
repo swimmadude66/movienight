@@ -1,5 +1,6 @@
 export * from './auth/service';
 export * from './caching';
+export * from './chat/service';
 export * from './connection/service';
 export * from './mask/service';
 export * from './scroll/service';

@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="row size-limited">
+    <div class="row theatre-wrapper">
         <!-- <div class="host-view" *ngIf="theatre?.IsHost">
             <div class="video-required" *ngIf=" !theatre.Video">
                 <h1 class="video-required-header">Please select a video to watch</h1>
@@ -36,13 +36,16 @@
                 #screen
                 [video]="video"
                 [isHost]="theatre?.IsHost"
+                [startTime]="theatre?.StartTime"
                 (ready)="playerReady($event)"
-                (resumed)="playerResumed($event)"
                 (ended)="playerEnded()"
                 (hostStart)="broadcastStart($event)"
                 (hostStop)="broadcastStop($event)"
                 (hostSelect)="selectVideo($event)"
             ></video-player>
         </div>
+        <!-- <div class="chat-container">
+            <chat [theatreId]="theatre?.TheatreId"></chat>
+        </div> -->
     </div>
 </div>

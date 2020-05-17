@@ -10,7 +10,7 @@ import { Subscriber } from '@core';
     providedIn: 'root'
 })
 export class SocketService extends Subscriber implements OnDestroy {
- 
+
     private _socket: SocketIOClient.Socket;
     private _socketIdSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
@@ -66,6 +66,13 @@ export class SocketService extends Subscriber implements OnDestroy {
         this._socket.off(event, handler);
     }
 
+    emit(event: string, data: any): void {
+        if (!this._socket) {
+            return;
+        }
+        this._socket.emit(event, data);
+    }
+
     getSocketId(): string {
         return this._socketIdSubject.value;
     }
@@ -102,7 +109,7 @@ export class SocketService extends Subscriber implements OnDestroy {
                     }
                 )
             );
-        });        
+        });
     }
 
     private _disconnect(): void {

@@ -39,9 +39,8 @@ export class StorageService {
                 Bucket: this._bucketName,
                 Fields: {
                     key: `videos/${videoId}`,
-                    'Content-type': vidInfo.Format,
+                    'Content-Type': vidInfo.Format,
                     'Content-Length': vidInfo.FileSize,
-
                 }
             }, (err, data) => {
                 if (err) {

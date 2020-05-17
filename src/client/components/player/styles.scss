@@ -3,6 +3,7 @@
 .player-wrapper {
     position: relative;
     width: 100%;
+    height: 100%;
     cursor: none;
     background-color: #000;
 
@@ -43,14 +44,14 @@
     .player-container {
         display: block;
         height: 100%;
-        width: 100%;
+        max-width: 100%;
+        margin: auto auto;
 
         .video-player {
             display: block;
             max-height: 100%;
             height: 100%;
             max-width: 100%;
-            width: 100%;
             background-color: #000;
             outline: none;
 
@@ -91,6 +92,39 @@
                 left: 0;
                 padding: 1rem 2rem 0;
                 pointer-events: none;
+            }
+
+            .autoplay-container {
+                width: 20rem;
+                height: 10rem;
+                position: absolute;
+                top: calc(50% - 5rem);
+                left: calc(50% - 10rem);
+                cursor: pointer;
+
+                .play-button-container {
+                    background: #000;
+                    border-radius: 2rem;
+                    width: 4rem;
+                    height: 4rem;
+                    padding: 1rem;
+                    font-size: 2rem;
+                    line-height: 2rem;
+                    color: #fff;
+                    margin: auto;
+
+                    .fas {
+                        margin-left: 0.2rem;
+                    }
+                }
+
+                .autoplay-message {
+                    color: $almost-white;
+                    text-align: center;
+                    margin: 0.2rem;
+                    font-size: 1.6rem;
+                    line-height: 2rem;
+                }
             }
 
             .bottom-controls {

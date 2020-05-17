@@ -32,7 +32,7 @@ export class VideoService {
         return this._cache.cacheRequest(
             `video_url_${videoId}`,
             this._http.get<{Url: string}>(`/api/videos/${videoId}`),
-            {cacheTime: 5 * 60 * 1000} // 5 min
+            {cacheTime: 1 * 60 * 1000} // 1 min
         );
     }
 

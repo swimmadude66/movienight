@@ -1,5 +1,5 @@
 @import '_variables';
- 
+
 .offline-banner {
     background-color: $main-color;
     height: $banner-height-xs;
@@ -23,23 +23,31 @@
 .main {
     display: flex;
     flex-direction: row;
+    position: relative;
     min-height: calc(100vh - #{$header-height});
     max-width: 100%;
 
     .header-wrapper-container {
         flex: 0 0 $header-height;
         max-height: $header-height;
+
         width: 100%;
+        position: relative;
     }
 
     .wrapper {
-        flex: 0 0 100%;
+        position: absolute;
+        top:0;
+        right:0;
+        bottom:0;
+        left: 0;
+        height: 100%;
+        // flex: 0 0 100%;
         max-width: 100%;
-        min-height: calc(100vh - #{$header-height});
         background-image: url('/assets/images/curtains.webp');
         background-size: 70rem 100%;
     }
-    
+
     &.offline {
         min-height: calc(100vh - #{$header-height + $banner-height-xs});
         @media(min-width: $screen-sm-min) {
