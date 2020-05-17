@@ -29,8 +29,7 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
     theatre: TheatreInfo;
     videoPreview: SafeResourceUrl;
 
-    playing: boolean = false;
-    ready: boolean = false;
+    private _ready: boolean = false;
 
     private _screen: VideoPlayerComponent;
 
@@ -45,7 +44,6 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log(this._route.snapshot.data);
         this.theatre = this._route.snapshot.data.theatre;
         if (this.theatre) {
             if (this.theatre.Video && this.theatre.Video.VideoId) {
@@ -91,17 +89,15 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
         return `${location.protocol}://${location.host}/theatres/${this.theatre.TheatreId}?a=${this.theatre.Access}`;
     }
 
-    playMovie(seekTime: number) {
+    playMovie() {
         // TODO:
         // - set a 2 second timeout/countdown?
-        this._screen.seekTo(seekTime);
         this._screen.play();
-        this.playing = true;
     }
 
     playerReady(ready: boolean) {
-        this.ready = ready;
-        if (ready && !this.playing) {
+        this._ready = ready;
+        if (ready && !this._screen.playing) {
             this._playWhenReady();
         }
     }
@@ -118,7 +114,6 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
 
     playerEnded() {
         console.log('video ended');
-        this.playing = false;
     }
 
     // Host events
@@ -172,14 +167,13 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
     }
 
     private _handleTheatreEvent(event: {key: string, data: any}) {
-        const now = new Date().valueOf();
         if (event.key === 'start_playing') {
-            const startTime: number = event.data.StartTime;
-            const seekTime = Math.floor(Math.max(0, now - startTime)/1000);
-            this.playMovie(seekTime);
+            this.theatre.StartTime = event.data.StartTime;
+            if (this.theatre && this.theatre.Video && this._ready) {
+                this._screen.play(event.data.StartTime)
+            }
         } else if (event.key === 'theatre_welcome') {
             this._toast.info('Putting you in sync with the others...', 'Welcome!');
-            console.log('got welcome', event);
             this.theatre = {...this.theatre, ...event.data};
             this._playWhenReady();
         } else if (event.key === 'stop_playing') {
@@ -192,12 +186,8 @@ export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
     }
 
     private _playWhenReady() {
-        if (this.theatre && this.theatre.StartTime && this.theatre.Video && this.ready) {
-            const now = new Date().valueOf();
-            const seekTime = Math.floor(Math.max(0, now - new Date(this.theatre.StartTime).valueOf())/1000);
-            if (seekTime < this.theatre.Video.Length) {
-                this.playMovie(seekTime);
-            }
+        if (this.theatre && this.theatre.StartTime && this.theatre.Video && this._ready) {
+            this.playMovie();
         }
     }
 }

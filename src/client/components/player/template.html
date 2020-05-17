@@ -19,26 +19,31 @@
             <!-- Put information to user/host here -->
         </div>
         <div class="video-controls">
-            <div class="host-controls" *ngIf="isHost">
-                <div class="start-stop-container">
-                    <div class="button-container">
-                        <button class="btn btn-primary" (click)="startVideo()" [disabled]="starting" *ngIf="!playing">
-                            Start Movie <span class="fas fa-play"></span>
-                        </button>
-                        <!--  -->
-                        <button class="btn btn-error" (click)="stopVideo()" [disabled]="stopping" *ngIf="playing">
-                            Stop Movie <span class="fas fa-stop"></span>
-                        </button>
-                    </div>
+            <div class="top-controls">
+                <div class="info-container">
+                    <h1 class="title">{{video?.Title}}</h1>
                 </div>
                 <!--  -->
                 <div class="flex-spacer"></div>
                 <!--  -->
-                <div class="change-video-container">
-                    <div class="button-container" *ngIf="!playing">
-                        <button class="btn btn-white" (click)="selectVideo()">
-                            Select Video <span class="fas fa-vhs"></span>
-                        </button>
+                <div class="host-controls" *ngIf="isHost">
+                    <div class="start-stop-container">
+                        <div class="button-container host-control">
+                            <button class="btn btn-primary" (click)="startVideo()" [disabled]="starting" *ngIf="!playing">
+                                Start Movie <span class="fas fa-play"></span>
+                            </button>
+                            <!--  -->
+                            <button class="btn btn-error" (click)="stopVideo()" [disabled]="stopping" *ngIf="playing">
+                                Stop Movie <span class="fas fa-stop"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="change-video-container host-control">
+                        <div class="button-container" *ngIf="!playing">
+                            <button class="btn btn-white" (click)="selectVideo()">
+                                Select Video <span class="fas fa-vhs"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

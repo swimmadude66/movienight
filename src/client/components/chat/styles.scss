@@ -1,0 +1,31 @@
+@import '_variables';
+
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .messages-container {
+        flex: 1 1 100%;
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: end;
+        overflow-y: hidden;
+        background-color: $almost-black;
+        padding: 0.5rem;
+
+        .message {
+            flex: 0 0 auto;
+            color: #fff;
+
+            .message-text {
+                margin: 0.2rem 0;
+            }
+        }
+    }
+
+    .input-container {
+        flex: 0 0 auto;
+        justify-self: flex-end;
+    }
+}

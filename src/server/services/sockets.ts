@@ -101,7 +101,6 @@ export class SocketService {
 
     private _initListener() {
         this._io.on('connect', (socket) => {
-            console.log('socket connected', socket.id);
             socket.emit('id', socket.id);
 
             socket.on('reconnect_attempt', () => {
@@ -129,7 +128,6 @@ export class SocketService {
             });
 
             socket.on('chat', (msg: {Message: string, TheatreId: string}) => {
-                console.log('got chat message', msg);
                 this._socketStore.getUserBySocket(socket.id)
                 .subscribe(
                     user => {

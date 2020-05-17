@@ -1,0 +1,13 @@
+<div class="chat-wrapper">
+    <div class="messages-container">
+        <div class="message" *ngFor="let m of messages" [@slideInBottom]>
+            <p class="message-text"><strong>{{m.Username}}:</strong> {{m.Message}}</p>
+        </div>
+    </div>
+    <div class="input-container">
+        <form [formGroup]="messageForm" (submit)="sendMessage()">
+            <input class="chat-input" type="text" [formControl]="messageControl" placeholder="say something...">
+            <button type="submit" style="display: none;"></button>
+        </form>
+    </div>
+</div>

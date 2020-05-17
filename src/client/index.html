@@ -21,24 +21,7 @@
     <meta name="msapplication-TileImage" content="/assets/icons/mstile-144x144.png">
     <meta name="msapplication-config" content="/assets/icons/browserconfig.xml">
     <meta name="theme-color" content="#3fbae8">
-    <script type="text/javascript">
-      var deferredPrompt;
-      // Check that service workers are registered
-      if ('serviceWorker' in navigator) {
-          // Use the window load event to keep the page load performant
-          window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/sw.js');
-          });
 
-          window.addEventListener('beforeinstallprompt', function(e) {
-              // Prevent Chrome 67 and earlier from automatically showing the prompt
-              e.preventDefault();
-              // Stash the event so it can be triggered later.
-              deferredPrompt = e;
-              console.log('App can be installed');
-          });
-      }
-    </script>
     <!-- Font awesome pro -->
     <script src="https://kit.fontawesome.com/5cb56494f8.js" crossorigin="anonymous"></script>
   </head>

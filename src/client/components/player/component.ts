@@ -140,20 +140,35 @@ export class VideoPlayerComponent extends Subscriber {
         }
     }
 
-    play() {
+    play(startTime?: string | number | Date) {
         if (this._player && this.videoSrc && this._ready) {
             const now = new Date().valueOf();
-            const seekTime = Math.floor(Math.max(0, now - new Date(this.startTime).valueOf())/1000);
+            const start = startTime || this.startTime;
+            if (!start) {
+                return; // no known start time
+            }
+            const seekTime = Math.floor(Math.max(0, now - new Date(start).valueOf())/1000);
             if (seekTime > this.video.Length) {
                 return; // movie is over
             }
             this.seekTo(seekTime);
-            this._ended = false;
-            this.playing = true;
-            this.starting = false;
             this._player.play()
             .then(
-                _ => this.interactionRequired = false,
+                _ => {
+                    this._ended = false;
+                    this.playing = true;
+                    this.starting = false;
+                    this.interactionRequired = false;
+                    this._progressSub = timer(0, 50)
+                    .pipe(
+                        takeWhile(_ => !this._ended)
+                    ).subscribe(
+                        _ => {
+                            this.currTime = this.getCurrentTime();
+                            this.percentPlayed = Math.floor((this.currTime / this.length) * 100);
+                        }
+                    )
+                },
                 err => this.interactionRequired = true
             );
         }
@@ -164,6 +179,7 @@ export class VideoPlayerComponent extends Subscriber {
             this._player.pause();
             this._player.currentTime = 0;
             this.currTime = 0;
+            this.percentPlayed = 0;
             this._ended = true;
             this.playing = false;
             this.stopping = false;

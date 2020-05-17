@@ -15,7 +15,7 @@
 .theatre-wrapper {
     display: flex;
     flex-wrap: nowrap;
-    height: calc(100vh - #{$header-height});
+    height: 100%;
     overflow: hidden;
 
     .player-area {
@@ -23,7 +23,12 @@
         height: 100%;
     }
     .chat-container {
-        flex: 0 1 15rem;
         height: 100%;
+        display: none;
+
+        @media(min-width: $screen-lg-min) {
+            flex: 0 1 20rem;
+            display: block;
+        }
     }
 }

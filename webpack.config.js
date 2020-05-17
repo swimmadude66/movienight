@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const workbox = require('workbox-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackSkipAssetsPlugin = require('html-webpack-skip-assets-plugin').HtmlWebpackSkipAssetsPlugin;
 const HtmlWebpackLinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
@@ -69,7 +68,7 @@ const config = {
             {
                 test: /\.scss$/,
                 include: [
-                    path.join(__dirname, './node_modules'), 
+                    path.join(__dirname, './node_modules'),
                     path.join(__dirname, './src/client/scss')
                 ],
                 use: [
@@ -148,7 +147,7 @@ const config = {
                 ]
             },
             // templateUrl
-            { 
+            {
                 test: /\.html$/,
                 use: 'html-loader'
             }
@@ -244,19 +243,6 @@ const config = {
         new NormalModuleReplacementPlugin(/environments\/environment/, function(resource) {
             resource.request = resource.request.replace(/environment$/, (process.env.BUILD_MODE === 'development' ? 'devEnvironment':'prodEnvironment'));
         }),
-        new workbox.InjectManifest({
-            swSrc: path.join(__dirname, './src/client/sw.js'),
-            swDest: 'sw.js',
-            // importsDirectory: 'wb-assets',
-
-            exclude: [
-                /styles\..*\.min\.js/i,     // empty bundle file from extractText
-                /[0-9]+\..*?\.min\.js$/i,   // lazy-loaded bundles
-                /\.map/i,                   // source-maps
-                /assets\/icons\//i,       // exclude precaching the icons
-                /node_modules/,             // node_modules
-            ]
-        })
     ]
 };
 

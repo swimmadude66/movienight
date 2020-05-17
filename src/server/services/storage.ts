@@ -52,7 +52,6 @@ export class StorageService {
             });
         }).pipe(
             switchMap(uploadInfo => {
-                console.log('got upload info', uploadInfo);
                 const exp = new Date(new Date().valueOf() + 60 * 60 * 1000); // 1 hr from now
                 const q = 'Insert into `videos`'
                 + ' (`VideoId`, `Title`, `Length`, `FileLocation`, `Format`, `Owner`, `Expires`, `Complete`)'
@@ -74,7 +73,6 @@ export class StorageService {
                         return throwError({Status: 500, Message: 'Could not save video'});
                     }),
                     map(_ => {
-                        console.log('Created video record');
                         return {Upload: uploadInfo, VideoId: videoId};
                     })
                 )

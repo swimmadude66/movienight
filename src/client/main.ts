@@ -15,5 +15,5 @@ if (env.isProdMode) {
 }
 document.addEventListener('DOMContentLoaded', () => {
     platformBrowserDynamic().bootstrapModule(AppModule, opts)
-    .catch(err => console.log(err));
+    .catch(err => console.error(err));
 });
