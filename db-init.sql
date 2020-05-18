@@ -33,6 +33,24 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   CONSTRAINT `session_user` FOREIGN KEY (`UserId`) REFERENCES `users` (`UserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `videos` (
+  `VideoRowId` int NOT NULL AUTO_INCREMENT,
+  `VideoId` char(36) NOT NULL,
+  `Title` varchar(255) NOT NULL,
+  `Length` mediumint unsigned NOT NULL,
+  `FileLocation` tinytext,
+  `Format` tinytext NOT NULL,
+  `Owner` char(36) NOT NULL,
+  `Complete` tinyint(1) NOT NULL DEFAULT '0',
+  `Expires` timestamp NOT NULL,
+  `Created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`VideoId`),
+  UNIQUE KEY `VideoId_UNIQUE` (`VideoId`),
+  UNIQUE KEY `VideoTitle_UNIQUE` (`Owner`,`Title`),
+  UNIQUE KEY `VideoRowId_UNIQUE` (`VideoRowId`),
+  CONSTRAINT `video_owner` FOREIGN KEY (`Owner`) REFERENCES `users` (`UserId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `theatres` (
   `TheatreRowId` int NOT NULL AUTO_INCREMENT,
   `TheatreId` char(32) NOT NULL,
@@ -50,22 +68,4 @@ CREATE TABLE IF NOT EXISTS `theatres` (
   KEY `theatre_video_idx` (`VideoId`),
   CONSTRAINT `theatre_owner` FOREIGN KEY (`Host`) REFERENCES `users` (`UserId`),
   CONSTRAINT `theatre_video` FOREIGN KEY (`VideoId`) REFERENCES `videos` (`VideoId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `videos` (
-  `VideoRowId` int NOT NULL AUTO_INCREMENT,
-  `VideoId` char(36) NOT NULL,
-  `Title` varchar(255) NOT NULL,
-  `Length` mediumint unsigned NOT NULL,
-  `FileLocation` tinytext,
-  `Format` tinytext NOT NULL,
-  `Owner` char(36) NOT NULL,
-  `Complete` tinyint(1) NOT NULL DEFAULT '0',
-  `Expires` timestamp NOT NULL,
-  `Created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`VideoId`),
-  UNIQUE KEY `VideoId_UNIQUE` (`VideoId`),
-  UNIQUE KEY `VideoTitle_UNIQUE` (`Owner`,`Title`),
-  UNIQUE KEY `VideoRowId_UNIQUE` (`VideoRowId`),
-  CONSTRAINT `video_owner` FOREIGN KEY (`Owner`) REFERENCES `users` (`UserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
