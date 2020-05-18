@@ -150,7 +150,7 @@ export class TheatreService {
     }
 
     startPlaying(theatreId: string, userId: string): Observable<any> {
-        const start = new Date();
+        const start = new Date().valueOf();
         const q = 'UPDATE `theatres` SET `StartTime`=? WHERE `TheatreId`=? AND `Host`=? AND `Active`=1 LIMIT 1;';
         return this._db.query(q, [start, theatreId, userId])
         .pipe(
