@@ -17,6 +17,8 @@ export class ChatComponent extends Subscriber implements OnInit {
 
     messages: ChatMessage[] = [];
 
+    usersHere: {username: string, userId: string}[] = [];
+
     messageControl = new FormControl('');
     messageForm = new FormGroup({
         message: this.messageControl
@@ -33,9 +35,22 @@ export class ChatComponent extends Subscriber implements OnInit {
             this._chatService.observeMessages()
             .subscribe(
                 msg => {
-                    this.messages.unshift(msg);
-                    if (this.messages.length > 50) {
-                        this.messages = this.messages.slice(0, 50);
+                    this._addMessage(msg);
+                }
+            )
+        );
+
+        this.addSubscription(
+            this._chatService.observeUsers()
+            .subscribe(
+                userChange => {
+                    this.usersHere = userChange.data.Users;
+                    console.log('CurrUsers:', this.usersHere);
+                    if (userChange.data.Joined) {
+                        return this._addMessage({Username: 'Server', Message: `${userChange.data.Joined} joined`});
+                    }
+                    if (userChange.data.Left) {
+                        return this._addMessage({Username: 'Server', Message: `${userChange.data.Left} left`});
                     }
                 }
             )
@@ -50,5 +65,12 @@ export class ChatComponent extends Subscriber implements OnInit {
             }
         }
         this.messageControl.reset();
+    }
+
+    private _addMessage(msg: Partial<ChatMessage>) {
+        this.messages.unshift(msg as ChatMessage);
+        if (this.messages.length > 50) {
+            this.messages = this.messages.slice(0, 50);
+        }
     }
 }

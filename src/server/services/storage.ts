@@ -40,7 +40,7 @@ export class StorageService {
                 Fields: {
                     key: `videos/${videoId}`,
                     'Content-Type': vidInfo.Format,
-                    'Content-Length': vidInfo.FileSize,
+                    'Content-Length': '' + vidInfo.FileSize,
                 }
             }, (err, data) => {
                 if (err) {
@@ -110,7 +110,8 @@ export class StorageService {
                 return Observable.create(obs => {
                     this._s3.getSignedUrl('getObject', {
                         Bucket: this._bucketName,
-                        Key: cleanKey
+                        Key: cleanKey,
+                        Expires: 6 * 60 * 60, // 6 hours
                     }, (err, url) => {
                         if (err) {
                             this._logger.logError(err);

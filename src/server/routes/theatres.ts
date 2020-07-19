@@ -1,9 +1,6 @@
 import {Router} from 'express';
 import { Config } from '../models/config';
 import { TheatreService } from '../services/theatre';
-import { switchMap } from 'rxjs/operators';
-import { throwError } from 'rxjs';
-import { VideoInfo } from '../models/theatre';
 
 module.exports = (APP_CONFIG: Config) => {
     const router = Router();
@@ -25,7 +22,7 @@ module.exports = (APP_CONFIG: Config) => {
         }
         const socketId = body.SocketId.trim();
         const access = body.Access.trim();
-        theatreService.joinTheatre(theatreId, access, userId, socketId)
+        theatreService.joinTheatre(theatreId, access, userId, socketId, res.locals.usersession.Username)
         .subscribe(
             theatre => {
                 theatre.IsHost = (theatre.Host === userId);
@@ -44,7 +41,7 @@ module.exports = (APP_CONFIG: Config) => {
         if (!body || !body.SocketId) {
             return res.status(400).send({Error: 'SocketId is required'});
         }
-        theatreService.leaveTheatre(theatreId, userId, body.SocketId)
+        theatreService.leaveTheatre(theatreId, userId, body.SocketId, res.locals.usersession.Username)
         .subscribe(
             _ => res.send({Message: 'Left theatre'}),
             err => {

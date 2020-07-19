@@ -11,3 +11,4 @@ export * from './signup/component';
 export * from './spinner/component';
 export * from './theatre/component';
 export * from './toast/component';
+export * from './video-upload/component';

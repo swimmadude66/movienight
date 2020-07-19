@@ -53,7 +53,7 @@ export class TheatreService {
         );
     }
 
-    joinTheatre(theatreId: string, access: string, userId: string, socketId: string): Observable<TheatreInfo> {
+    joinTheatre(theatreId: string, access: string, userId: string, socketId: string, username: string): Observable<TheatreInfo> {
         // validate socket
         return this._socketStore.getSockets(userId)
         .pipe(
@@ -74,7 +74,7 @@ export class TheatreService {
                 this._socket.getRoomOccupants(theatreId)
                 .subscribe(
                     occ => {
-                        this._socket.sendEvent(theatreId, 'user_join', {UserCount: occ.length});
+                        this._socket.sendEvent(theatreId, 'user_join', {Users: occ, Joined: username});
                     },
                     err => {
                         this._logger.logError(err);
@@ -84,7 +84,7 @@ export class TheatreService {
         );
     }
 
-    leaveTheatre(theatreId: string, userId: string, socketId: string): Observable<any> {
+    leaveTheatre(theatreId: string, userId: string, socketId: string, username: string): Observable<any> {
         return this._socketStore.getSockets(userId)
         .pipe(
             switchMap(sockets => {
@@ -97,7 +97,7 @@ export class TheatreService {
                 this._socket.getRoomOccupants(theatreId)
                 .subscribe(
                     occ => {
-                        this._socket.sendEvent(theatreId, 'user_left', {UserCount: occ.length});
+                        this._socket.sendEvent(theatreId, 'user_left', {Users: occ, Left: username});
                     },
                     err => {
                         this._logger.logError(err);
@@ -140,7 +140,7 @@ export class TheatreService {
                 return throwError({Status: 500, Message: 'Could not lookup your theatres'});
             }),
             switchMap(results => {
-                if (!results || results.length !== 1) {
+                if (!results || results.length < 1) {
                     return throwError({Status: 404, Message: 'Could not find theatre'});
                 }
                 const theatres = results.map(r => this._mapDBReponseToTheatre(r));

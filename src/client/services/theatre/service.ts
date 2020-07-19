@@ -95,8 +95,6 @@ export class TheatreService extends Subscriber {
     private _initListener() {
         const theatreEvents = [
             'theatre_welcome',
-            'user_join',
-            'user_left',
             'start_playing',
             'stop_playing'
         ]

@@ -1,9 +1,9 @@
 import * as socketio from 'socket.io';
 import * as socketRedis from 'socket.io-redis';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, forkJoin } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { Server } from 'http';
-import { SocketStoreService } from './socket-store';
+import { SocketStoreService, SocketUser } from './socket-store';
 import { LoggingService } from './logger';
 
 type SocketServer = socketio.Server;
@@ -86,7 +86,7 @@ export class SocketService {
         });
     }
 
-    getRoomOccupants(roomId: string): Observable<string[]> {
+    getRoomOccupants(roomId: string): Observable<SocketUser[]> {
         return Observable.create(obs => {
             (this._io.in(roomId).adapter as RedisAdapter).clients([roomId], (err, clients) =>{
                 if (err) {
@@ -96,7 +96,17 @@ export class SocketService {
                 obs.next(clients);
                 return obs.complete();
             })
-        });
+        }).pipe(
+            switchMap(
+                (socketIds: string[]) => {
+                    const userRequests = socketIds
+                    .map(s =>
+                        this._socketStore.getUserBySocket(s)
+                    );
+                    return forkJoin(userRequests);
+                }
+            )
+        );
     }
 
     private _initListener() {

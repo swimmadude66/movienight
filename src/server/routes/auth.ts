@@ -22,10 +22,10 @@ module.exports = (APP_CONFIG: Config) => {
         if (!body || !body.Username || !body.Password) {
             return res.status(400).send({Error: 'Username and Password are required fields'});
         } else {
-            const passwordValid = authService.validatePasswordCriteria(body.Password);
-            if (!passwordValid.Valid) {
-                return res.status(400).send({Error: passwordValid.Message});
-            }
+            // const passwordValid = authService.validatePasswordCriteria(body.Password);
+            // if (!passwordValid.Valid) {
+            //     return res.status(400).send({Error: passwordValid.Message});
+            // }
             return authService.signup(body.Username, body.Password)
             .subscribe(
                 user => {

@@ -15,7 +15,7 @@ nodejs-npm \
 chromium \
 && export CHROME_BIN=/usr/bin/chromium-browser \
 && npm install \
-&& npm test \
+&& npm run test-client \
 && apk del \
 chromium \
 && npm run build \

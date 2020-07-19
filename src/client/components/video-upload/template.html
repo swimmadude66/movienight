@@ -1,0 +1,49 @@
+<loading-spinner *ngIf="loading"></loading-spinner>
+<div class="container">
+    <div class="row size-limited">
+        <div class="video-required">
+            <h1 class="video-required-header">Upload a video</h1>
+            <input-group
+                type="text"
+                [formControl]="videoControls.title"
+                id="txtVideoTitle"
+                name="title"
+                label="Title"
+                placeholder="Video Title"
+            >
+            </input-group>
+            <div class="file-upload-container" *ngIf="!videoPreview">
+                <file-reader
+                    accepts="video/mp4"
+                    (info)="handleFileInfo($event)"
+                ></file-reader>
+            </div>
+            <div class="video-preview-container" *ngIf="videoPreview">
+                <video
+                    #screen
+                    [src]="videoPreview"
+                    controls="true"
+                    width="100%"
+                    (canplay)="previewReady($event)"
+                ></video>
+                <div class="preview-actions-container">
+                    <div class="cancel-container">
+                        <button class="btn btn-error" (click)="changeVideo()">
+                            Cancel
+                        </button>
+                    </div>
+                    <div class="accept-container">
+                        <button class="btn btn-success" (click)="uploadVideo()" [disabled]="videoForm.invalid || !videoPreview">
+                            Upload
+                        </button>
+                    </div>
+                </div>
+                <div class="upload-progress-container" *ngIf="uploading">
+                    <div class="progress-outer">
+                        <div class="progress-inner" [ngStyle]="{width: uploadProgress + '%'}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

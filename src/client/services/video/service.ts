@@ -48,4 +48,8 @@ export class VideoService {
             reportProgress: true,
         });
     }
+
+    completeUpload(videoId: string): Observable<any> {
+        return this._http.post(`/api/videos/${videoId}/complete`, {});
+    }
 }

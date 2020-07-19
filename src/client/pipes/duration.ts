@@ -21,7 +21,7 @@ export class DurationPipe implements PipeTransform {
             return `${this.to2digits(minutes)}:${this.to2digits(seconds)}`;
         }
         const hours = Math.floor(minutes / 60);
-        return `${hours}:${minutes % 60}:${seconds}`;
+        return `${hours}:${this.to2digits(minutes % 60)}:${this.to2digits(seconds)}`;
     }
 
     private to2digits(num: number): string {

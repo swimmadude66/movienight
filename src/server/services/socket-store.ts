@@ -1,7 +1,7 @@
 import * as cluster from 'cluster';
 import { Observable, of } from 'rxjs';
 
-interface SocketUser {
+export interface SocketUser {
     userId: string;
     username: string
 }
