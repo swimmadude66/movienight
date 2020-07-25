@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Subscriber } from '@core/';
+import { SubscriberComponent } from '@core/';
 import { TheatreInfo, FileInfo, VideoInfo } from '@models/';
 import { TheatreService, VideoService, ToastService } from '@services/';
 import { VideoPlayerComponent } from '@components/player/component';
@@ -11,7 +11,7 @@ import { VideoPlayerComponent } from '@components/player/component';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class TheatreComponent extends Subscriber implements OnInit, OnDestroy {
+export class TheatreComponent extends SubscriberComponent implements OnInit, OnDestroy {
 
     @ViewChild('screen') set screen(s : ElementRef<VideoPlayerComponent> | VideoPlayerComponent) {
         if (s) {

@@ -6,6 +6,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ShortenTextPipe, FloorNumberPipe, DurationPipe} from '@pipes/';
 import {AltTextDirective, ExternalLinkDirective} from '@directives/';
 import {InputGroupComponent, ToastComponent, SpinnerComponent, LoadingSpinnerComponent, FileReaderComponent} from '@components/';
+import { SubscriberComponent } from '@core';
 
 @NgModule({
     imports:[
@@ -25,6 +26,7 @@ import {InputGroupComponent, ToastComponent, SpinnerComponent, LoadingSpinnerCom
         SpinnerComponent,
         LoadingSpinnerComponent,
         FileReaderComponent,
+        SubscriberComponent,
     ],
     exports: [
         //imports
@@ -43,6 +45,7 @@ import {InputGroupComponent, ToastComponent, SpinnerComponent, LoadingSpinnerCom
         SpinnerComponent,
         LoadingSpinnerComponent,
         FileReaderComponent,
+        SubscriberComponent,
     ]
 })
 export class SharedModule {}

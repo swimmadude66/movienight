@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { Subscription, timer, Subject } from 'rxjs';
-import { Subscriber } from '@core';
+import { SubscriberComponent } from '@core';
 import { VideoInfo } from '@models';
 import { takeWhile, debounceTime, distinctUntilChanged, throttleTime, debounce, tap } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
@@ -11,7 +11,7 @@ import { FormControl } from '@angular/forms';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class VideoPlayerComponent extends Subscriber {
+export class VideoPlayerComponent extends SubscriberComponent {
 
     @ViewChild('player') set player(p: ElementRef<HTMLVideoElement>) {
         if (p && p.nativeElement) {

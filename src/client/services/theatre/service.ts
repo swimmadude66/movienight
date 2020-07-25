@@ -4,13 +4,13 @@ import { Observable, ReplaySubject } from 'rxjs';
 import { map, distinctUntilChanged, timeout, switchMap, first } from 'rxjs/operators';
 import { HttpCacheService } from '@services/caching';
 import { TheatreInfo } from '@models/theatre';
-import { Subscriber } from '@core/';
+import { SubscriberComponent } from '@core/';
 import { SocketService } from '@services/socket/service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class TheatreService extends Subscriber {
+export class TheatreService extends SubscriberComponent {
 
     private _socketId: string;
 

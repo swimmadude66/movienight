@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
-import {Subscriber} from '@core/';
+import {SubscriberComponent} from '@core/';
 import {AuthService} from '@services/';
 
 @Component({
@@ -9,7 +9,7 @@ import {AuthService} from '@services/';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class LoginComponent extends Subscriber {
+export class LoginComponent extends SubscriberComponent {
 
     serverError: string;
 

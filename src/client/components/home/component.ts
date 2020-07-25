@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { FormGroup, AbstractControl, FormControl, Validators } from '@angular/forms';
 import { distinctUntilChanged } from 'rxjs/operators';
-import { Subscriber } from '@core/';
+import { SubscriberComponent } from '@core/';
 import { AuthService, TheatreService } from '@services/';
 import { TheatreInfo } from '@models/theatre';
 
@@ -10,7 +10,7 @@ import { TheatreInfo } from '@models/theatre';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class HomeComponent extends Subscriber implements OnInit {
+export class HomeComponent extends SubscriberComponent implements OnInit {
 
     isLoading: boolean = false;
     isAdmin: boolean = false;

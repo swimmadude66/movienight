@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
-import { Subscriber } from '@core/';
+import { SubscriberComponent } from '@core/';
 import { Toast, ToastType } from '@models/shared/toast';
 
 @Component({
@@ -9,7 +9,7 @@ import { Toast, ToastType } from '@models/shared/toast';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class ToastComponent extends Subscriber implements OnInit {
+export class ToastComponent extends SubscriberComponent implements OnInit {
 
     ToastType: typeof ToastType = ToastType;
 
@@ -17,7 +17,7 @@ export class ToastComponent extends Subscriber implements OnInit {
     @Output('dismiss') dismiss: EventEmitter<boolean> = new EventEmitter<boolean>(); // boolean value to represent whether it was killed, or expired
 
     private _expired: boolean = false;
-    
+
     ngOnInit() {
         this.addSubscription(
             timer(0, 100)

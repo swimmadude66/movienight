@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subscriber, Animations } from '@core';
+import { SubscriberComponent, Animations } from '@core';
 import { ChatMessage } from '@models';
 import { ChatService } from '@services';
 
@@ -11,7 +11,7 @@ import { ChatService } from '@services';
     styleUrls: ['./styles.scss'],
     animations: [Animations.slideInBottom]
 })
-export class ChatComponent extends Subscriber implements OnInit {
+export class ChatComponent extends SubscriberComponent implements OnInit {
 
     @Input('theatreId') theatreId: string;
 

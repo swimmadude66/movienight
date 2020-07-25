@@ -4,12 +4,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import * as socketio from 'socket.io-client';
 import { AuthService } from '@services/auth/service';
-import { Subscriber } from '@core';
+import { SubscriberComponent } from '@core';
 
 @Injectable({
     providedIn: 'root'
 })
-export class SocketService extends Subscriber implements OnDestroy {
+export class SocketService extends SubscriberComponent implements OnDestroy {
 
     private _socket: SocketIOClient.Socket;
     private _socketIdSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);

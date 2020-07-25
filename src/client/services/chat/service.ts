@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, distinctUntilChanged, switchMap, first } from 'rxjs/operators';
 import { HttpCacheService } from '@services/caching';
-import { Subscriber } from '@core/';
+import { SubscriberComponent } from '@core/';
 import { SocketService } from '@services/socket/service';
 import { ChatMessage } from '@models';
 
@@ -24,7 +24,7 @@ export interface UserEvent {
 @Injectable({
     providedIn: 'root'
 })
-export class ChatService extends Subscriber {
+export class ChatService extends SubscriberComponent {
 
     private _socketId: string;
     private _messageSubject: ReplaySubject<ChatMessage> = new ReplaySubject<ChatMessage>(25);

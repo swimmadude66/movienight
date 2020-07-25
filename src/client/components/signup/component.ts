@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
-import {Subscriber, PasswordValidation} from '@core/';
+import {SubscriberComponent, PasswordValidation} from '@core/';
 import {AuthService} from '@services/';
 
 @Component({
@@ -9,7 +9,7 @@ import {AuthService} from '@services/';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class SignupComponent extends Subscriber {
+export class SignupComponent extends SubscriberComponent {
 
     form: FormGroup;
     error: string;

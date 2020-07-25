@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subscriber } from '@core';
+import { SubscriberComponent } from '@core';
 import { VideoService } from '@services';
 import { VideoInfo, FileInfo } from '@models';
 import { switchMap, first, tap } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { switchMap, first, tap } from 'rxjs/operators';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class VideoUploadComponent extends Subscriber implements OnInit {
+export class VideoUploadComponent extends SubscriberComponent implements OnInit {
 
     @ViewChild('screen') set screen(s : ElementRef<HTMLVideoElement> | HTMLVideoElement) {
         if (s) {
@@ -39,9 +39,8 @@ export class VideoUploadComponent extends Subscriber implements OnInit {
     uploadProgress: number = 0;
     uploading: boolean = false;
 
-    private _fileInfo: FileInfo;
+    fileInfo: FileInfo;
     private _screen: HTMLVideoElement;
-    private _lastUploadedId: string;
 
     constructor(
         private _video: VideoService,
@@ -55,22 +54,23 @@ export class VideoUploadComponent extends Subscriber implements OnInit {
 
     handleFileInfo(fileInfo: FileInfo) {
         console.log(fileInfo);
-        this._fileInfo = fileInfo;
-        this.videoPreview = this._sanitizer.bypassSecurityTrustResourceUrl(fileInfo.dataUrl);
+        this.fileInfo = fileInfo;
         this.videoControls.file.setValue(fileInfo.file);
+        this.videoControls.length.setValue(fileInfo.duration);
+
+        // this.videoPreview = this._sanitizer.bypassSecurityTrustResourceUrl(fileInfo.dataUrl);
     }
 
-    previewReady() {
-        // get file info from player
-        if (!this._screen) {
-            console.error('no preview screen');
-            return;
-        }
-        this.videoControls.length.setValue(this._screen.duration);
-    }
+    // previewReady() {
+    //     // get file info from player
+    //     if (!this._screen) {
+    //         console.error('no preview screen');
+    //         return;
+    //     }
+    // }
 
     changeVideo() {
-        this._fileInfo = null;
+        this.fileInfo = null;
         this.videoControls.title.reset();
         this.videoForm.reset();
         this.videoPreview = null;
@@ -81,7 +81,7 @@ export class VideoUploadComponent extends Subscriber implements OnInit {
             console.error(this.videoForm.errors);
             return;
         }
-        if (!this._fileInfo) {
+        if (!this.fileInfo) {
             console.error('could not read file');
             return;
         }
@@ -90,16 +90,16 @@ export class VideoUploadComponent extends Subscriber implements OnInit {
         this.addSubscription(
             this._video.getUploadUrl(
                 this.videoControls.title.value,
-                this._fileInfo.filetype,
+                this.fileInfo.filetype,
                 this.videoControls.length.value,
-                this._fileInfo.file.size,
-                this._fileInfo.filename
+                this.fileInfo.file.size,
+                this.fileInfo.filename
             ).pipe(
                 switchMap(
                     response => {
                         _videoId = response.VideoId;
                         const params = response.Upload;
-                        return this._video.uploadVideo(params, this._fileInfo.file);
+                        return this._video.uploadVideo(params, this.fileInfo.file);
                     }
                 ),
                 tap(evt => {

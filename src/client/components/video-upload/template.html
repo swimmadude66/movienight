@@ -12,20 +12,20 @@
                 placeholder="Video Title"
             >
             </input-group>
-            <div class="file-upload-container" *ngIf="!videoPreview">
+            <div class="file-upload-container" *ngIf="!fileInfo">
                 <file-reader
                     accepts="video/mp4"
                     (info)="handleFileInfo($event)"
                 ></file-reader>
             </div>
-            <div class="video-preview-container" *ngIf="videoPreview">
-                <video
+            <div class="video-preview-container" *ngIf="fileInfo">
+                <!-- <video
                     #screen
                     [src]="videoPreview"
                     controls="true"
                     width="100%"
                     (canplay)="previewReady($event)"
-                ></video>
+                ></video> -->
                 <div class="preview-actions-container">
                     <div class="cancel-container">
                         <button class="btn btn-error" (click)="changeVideo()">
@@ -33,7 +33,7 @@
                         </button>
                     </div>
                     <div class="accept-container">
-                        <button class="btn btn-success" (click)="uploadVideo()" [disabled]="videoForm.invalid || !videoPreview">
+                        <button class="btn btn-success" (click)="uploadVideo()" [disabled]="videoForm.invalid || !fileInfo">
                             Upload
                         </button>
                     </div>

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core'
 import { Router } from '@angular/router';
-import { Subscriber } from '@core/base/subscriber';
+import { SubscriberComponent } from '@core/base/subscriber';
 import { AuthService } from '@services/auth/service';
 
 @Component({
@@ -8,7 +8,7 @@ import { AuthService } from '@services/auth/service';
     templateUrl: './template.html',
     styleUrls: ['./styles.scss']
 })
-export class AppHeaderComponent extends Subscriber implements OnInit{
+export class AppHeaderComponent extends SubscriberComponent implements OnInit{
 
     isLoggedIn: boolean = false;
     isAdmin: boolean = false;

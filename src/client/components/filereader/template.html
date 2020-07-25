@@ -15,4 +15,7 @@
     <div class="error-container">
         <p class="error-text" *ngIf="error && error.length">{{error}}</p>
     </div>
+    <div class="hidden-metadata-reader">
+        <video preload="metadata" #preview></video>
+    </div>
 </div>

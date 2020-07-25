@@ -2,7 +2,7 @@ import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel } from '@angular/router';
 import {distinctUntilChanged} from 'rxjs/operators';
 import {Animations} from '@core/animations/';
-import {Subscriber} from '@core/base/subscriber';
+import {SubscriberComponent} from '@core/base/subscriber';
 import {Toast} from '@models/shared/toast';
 import {ConnectionService, ToastService, WebviewService} from '@services/';
 
@@ -15,7 +15,7 @@ import {ConnectionService, ToastService, WebviewService} from '@services/';
         Animations.toast
     ]
 })
-export class AppComponent extends Subscriber implements OnInit {
+export class AppComponent extends SubscriberComponent implements OnInit {
 
     online: boolean = true; // default to true to avoid banner-flicker
     inWebView: boolean = false;
