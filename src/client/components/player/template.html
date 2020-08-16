@@ -73,7 +73,7 @@
                 <div class="curr-time">
                     {{currTime | duration}} / {{length || 0 | duration}}
                 </div>
-                <div class="progress-outer">
+                <div class="progress-outer" (click)="testSeek($event)">
                     <div class="progress-inner" [ngStyle]="{width: percentPlayed + '%'}"></div>
                 </div>
             </div>

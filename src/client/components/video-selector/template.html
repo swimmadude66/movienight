@@ -1,7 +1,10 @@
 <loading-spinner *ngIf="loading"></loading-spinner>
 <div class="selector-container">
     <div class="current-selection-container" *ngIf="theatreInfo?.Video">
-        Video info will go here
+        <div class="current-video-title">
+            <p class="current-video-title-header">Current Video:</p>
+            <p class="current-video-title-value">{{theatreInfo?.Video?.Title}}</p>
+        </div>
     </div>
     <div class="videos-container">
         <div class="video-row" *ngFor="let video of videos">
@@ -9,7 +12,7 @@
                 {{video?.Title}}
             </div>
             <div class="video-time-container">
-                {{video?.Length | duration}} runtime
+                {{video?.Length | duration}}
             </div>
             <div class="flex-spacer"></div>
             <div class="select-video-container">

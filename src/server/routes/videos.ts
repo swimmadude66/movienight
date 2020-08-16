@@ -20,7 +20,6 @@ module.exports = (APP_CONFIG: Config) => {
     );
 
     router.get('/', (req, res) => {
-        logger.log('Getting videos');
         const ownerId = res.locals.usersession.UserId;
         videos.getVideos(ownerId)
         .subscribe(

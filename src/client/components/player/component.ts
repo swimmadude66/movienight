@@ -119,6 +119,10 @@ export class VideoPlayerComponent extends SubscriberComponent {
         );
     }
 
+    testSeek(event: MouseEvent) {
+        console.log(event);
+    }
+
     mouseMove(evt) {
         this._mouseSubject.next(evt);
     }

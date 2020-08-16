@@ -17,7 +17,7 @@ export class ToastService {
     constructor(){}
 
     toast(type: ToastType, message: string, title?: string, options: ToastOptions = defaultOpts): Toast {
-        const id = new Buffer(type + title + (message || ''), 'utf8').toString('base64');
+        const id = btoa(type + title + (message || ''));
         const now = new Date();
         const expires = options.expireTime || new Date(now.valueOf() + (options.expireMillis || defaultOpts.expireMillis));
         const t: Toast = {
@@ -51,5 +51,5 @@ export class ToastService {
     observeToasts(): Observable<Toast> {
         return this._toastSubject;
     }
-    
+
 }

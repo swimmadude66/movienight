@@ -151,7 +151,7 @@ export class TheatreService {
     }
 
     changeVideo(theatreId: string, userId: string, videoId: string): Observable<any> {
-        const vq = 'Select * from `Videos` Where `VideoId`=? AND `Owner`=? LIMIT 1;';
+        const vq = 'Select * from `videos` Where `VideoId`=? AND `Owner`=? LIMIT 1;';
         let video;
         return this._db.query<VideoInfo[]>(vq, [videoId, userId])
         .pipe(
@@ -160,7 +160,7 @@ export class TheatreService {
                     return throwError({Status: 400, Message: 'Video not recognized'});
                 }
                 video = videos[0];
-                const q = 'UPDATE `theatres` SET `Video`=? WHERE `TheatreId`=? AND `Host`=? AND `Active`=1 LIMIT 1;';
+                const q = 'UPDATE `theatres` SET `VideoId`=? WHERE `TheatreId`=? AND `Host`=? AND `Active`=1 LIMIT 1;';
 
                 return this._db.query(q, [videoId, theatreId, userId])
             }),

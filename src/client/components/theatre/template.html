@@ -25,7 +25,7 @@
             <span class="fa-lg fas fa-times clickable" (click)="isSelectingVideo = false"></span>
         </div>
         <div class="modal-body">
-            <video-selector [theatreInfo]="theatre" (selectedVideo)="updateVideo($event)"></video-selector>
+            <video-selector [theatreInfo]="theatre" (selectedVideo)="isSelectingVideo = false"></video-selector>
         </div>
     </div>
 </div>

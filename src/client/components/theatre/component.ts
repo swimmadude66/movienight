@@ -45,20 +45,7 @@ export class TheatreComponent extends SubscriberComponent implements OnInit, OnD
         this.theatre = this._route.snapshot.data.theatre;
         if (this.theatre) {
             if (this.theatre.Video && this.theatre.Video.VideoId) {
-                this.addSubscription(
-                    this._video.getVideoUrl(this.theatre.Video.VideoId)
-                    .subscribe(
-                        response => {
-                            this.video = {
-                                ...this.theatre.Video,
-                                Url: response.Url
-                            }
-                        },
-                        err => {
-                            console.error(err);
-                        }
-                    )
-                );
+                this.setVideo(this.theatre.Video);
             }
             this.addSubscription(
                 this._theatre.observeEvents()
@@ -145,12 +132,25 @@ export class TheatreComponent extends SubscriberComponent implements OnInit, OnD
         this.isSelectingVideo = true;
     }
 
-    updateVideo(video: VideoInfo) {
-        this.theatre.Video = video;
-
+    setVideo(videoInfo: VideoInfo) {
+        this.addSubscription(
+            this._video.getVideoUrl(videoInfo.VideoId)
+            .subscribe(
+                response => {
+                    this.video = {
+                        ...videoInfo,
+                        Url: response.Url
+                    }
+                },
+                err => {
+                    console.error(err);
+                }
+            )
+        );
     }
 
     private _handleTheatreEvent(event: {key: string, data: any}) {
+        // console.log('DEBUG:: GOT THEATRE EVENT', event);
         if (event.key === 'start_playing') {
             this.theatre.StartTime = event.data.StartTime;
             if (this.theatre && this.theatre.Video && this._ready) {
@@ -168,6 +168,7 @@ export class TheatreComponent extends SubscriberComponent implements OnInit, OnD
             }
         } else if (event.key === 'video_changed') {
             this.theatre.Video = event.data.Video;
+            this.setVideo(event.data.Video);
             this.theatre.StartTime = null;
         }
     }

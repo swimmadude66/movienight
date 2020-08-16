@@ -5,17 +5,24 @@
 
     .current-selection-container {
         display: flex;
+        .current-video-title-header {
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-weight: 700;
+        }
+        .current-video-title-value {
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
     }
 
     .videos-container {
-        display: flex;
-
         .video-row {
-            flex: 1;
+            flex: 0 0 100%;
             display: flex;
             align-items: center;
             padding: 1rem 2rem;
-            border-top: 0.1rem solid $divider-color;
+            border-top: 0.1rem solid $almost-black;
 
             .video-title-container {
                 flex: 3;
