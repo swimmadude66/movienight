@@ -32,7 +32,7 @@ const APP_CONFIG: Config = {
     port: (+process.env.NODE_PORT) || 3000,
     log_level: process.env.MORGAN_LOG_LEVEL || 'short',
     client_root: process.env.CLIENT_ROOT || join(__dirname, '../client/'),
-    max_workers: +(process.env.MAX_WORKERS || cpus().length),
+    max_workers: +(process.env.MAX_NODE_WORKERS || cpus().length),
     logger: loggingService,
     socketStore: socketStore,
 };
@@ -68,7 +68,7 @@ if (cluster.isMaster) {
         workers.forEach((worker) => worker.kill());
     });
 
-} else {    
+} else {
     const app = express();
     app.use(compress());
     app.use(userAgent.express());
@@ -77,7 +77,7 @@ if (cluster.isMaster) {
     app.use(cookieParser(APP_CONFIG.cookie_secret));
     app.use(
         morgan(
-            APP_CONFIG.log_level || ((tokens, req, res) => LoggingService.customLogger(tokens, req, res)), 
+            APP_CONFIG.log_level || ((tokens, req, res) => LoggingService.customLogger(tokens, req, res)),
             {
                 stream: loggingService.logStream
             }
@@ -134,8 +134,8 @@ if (cluster.isMaster) {
     const authService = new AuthService(db, loggingService);
     APP_CONFIG.authService = authService;
     const socketService = new SocketService(
-        server, 
-        socketStore, 
+        server,
+        socketStore,
         loggingService,
         process.env.REDIS_HOST || 'localhost',
         +(process.env.REDIS_PORT || 6379)

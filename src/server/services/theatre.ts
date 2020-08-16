@@ -2,7 +2,8 @@ import { Observable, throwError, of } from 'rxjs';
 import { map, switchMap, catchError, tap } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid'
 import { randomBytes } from 'crypto';
-import { TheatreInfo, VideoInfo } from '../models/theatre';
+import { TheatreInfo } from '../models/theatre';
+import { VideoInfo } from '../models/videos';
 import { DatabaseService } from './db';
 import { SocketService, SocketNamespace } from './sockets';
 import { LoggingService } from './logger';
@@ -146,6 +147,41 @@ export class TheatreService {
                 const theatres = results.map(r => this._mapDBReponseToTheatre(r));
                 return of(theatres);
             })
+        );
+    }
+
+    changeVideo(theatreId: string, userId: string, videoId: string): Observable<any> {
+        const vq = 'Select * from `Videos` Where `VideoId`=? AND `Owner`=? LIMIT 1;';
+        let video;
+        return this._db.query<VideoInfo[]>(vq, [videoId, userId])
+        .pipe(
+            switchMap(videos => {
+                if (!videos || videos.length !== 1) {
+                    return throwError({Status: 400, Message: 'Video not recognized'});
+                }
+                video = videos[0];
+                const q = 'UPDATE `theatres` SET `Video`=? WHERE `TheatreId`=? AND `Host`=? AND `Active`=1 LIMIT 1;';
+
+                return this._db.query(q, [videoId, theatreId, userId])
+            }),
+            switchMap(results => {
+                if (!results || results.affectedRows !== 1) {
+                    return throwError({Status: 400, Message: 'Invalid theatre or host'});
+                }
+                if (results.changedRows !== 1) {
+                    return of(true); // do nothing, no change in information
+                }
+                this._socket.sendEvent(theatreId, 'video_changed', {Video: video});
+                return of(true);
+            }),
+            catchError(err => {
+                if (err.Status && err.Message) {
+                    return throwError(err);
+                }
+                this._logger.logError(err);
+                return throwError({Status: 500, Message: 'Could not change videos'});
+            }),
+
         );
     }
 

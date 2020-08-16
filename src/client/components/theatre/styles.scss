@@ -32,3 +32,41 @@
         }
     }
 }
+
+.video-select-container {
+    position: absolute;
+    top: 5rem;
+    left: 2rem;
+    bottom: 5rem;
+    right: 2rem;
+    z-index: 10;
+    display: flex;
+
+    .modal {
+        position: relative;
+        flex: 1;
+        background: $light-grey;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        max-width: $max-content-width;
+        margin: auto auto;
+
+        .close-modal-container {
+            display: flex;
+            width: 100%;
+            justify-content: flex-end;
+            font-size: 2rem;
+            padding: 0.5rem;
+        }
+
+        .modal-body {
+            display: flex;
+            width: 100%;
+
+            video-selector {
+                width: 100%;
+            }
+        }
+
+    }
+}

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpCacheService } from '@services/caching';
 import { Observable } from 'rxjs';
 import { VideoInfo } from '@models';
+import { map } from 'rxjs/operators';
 
 export interface UploadParams {
     url: string;
@@ -19,6 +20,16 @@ export class VideoService {
         private _cache: HttpCacheService,
     ) {
 
+    }
+
+    getVideos(): Observable<VideoInfo[]> {
+        return this._cache.cacheRequest(
+            `my_videos`,
+            this._http.get<{Videos: VideoInfo[]}>(`/api/videos`),
+            {cacheTime: 60 * 1000}
+        ).pipe(
+            map(res => res.Videos)
+        );
     }
 
     getUploadUrl(title: string, format: string, length: number, size: number, name: string): Observable<{VideoId: string, Upload: UploadParams}> {

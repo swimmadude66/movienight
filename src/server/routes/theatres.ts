@@ -67,6 +67,22 @@ module.exports = (APP_CONFIG: Config) => {
         );
     });
 
+    router.post('/:theatreId/changevideo', (req, res) => {
+        const theatreId = req.params.theatreId;
+        const userId = res.locals.usersession.UserId;
+        const body = req.body;
+        if (!body || !body.VideoId) {
+            return res.status(400).send({Error: 'VideoId is required'});
+        }
+        theatreService.changeVideo(theatreId, userId, body.VideoId)
+        .subscribe(
+            _ => res.send({Message: 'Video Set!'}),
+            err => {
+                return res.status(err.Status || 500).send({Error: err.Message || 'Could not change video'});
+            }
+        );
+    });
+
     router.post('/:theatreId/start', (req, res) => {
         const theatreId = req.params.theatreId;
         const userId = res.locals.usersession.UserId;

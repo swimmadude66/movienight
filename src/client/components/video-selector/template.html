@@ -1,0 +1,30 @@
+<loading-spinner *ngIf="loading"></loading-spinner>
+<div class="selector-container">
+    <div class="current-selection-container" *ngIf="theatreInfo?.Video">
+        Video info will go here
+    </div>
+    <div class="videos-container">
+        <div class="video-row" *ngFor="let video of videos">
+            <div class="video-title-container">
+                {{video?.Title}}
+            </div>
+            <div class="video-time-container">
+                {{video?.Length | duration}} runtime
+            </div>
+            <div class="flex-spacer"></div>
+            <div class="select-video-container">
+                <button class="btn btn-primary"
+                    [disabled]="theatreInfo?.Video?.VideoId === video?.VideoId || loading"
+                    (click)="selectVideo(video)"
+                >
+                    {{theatreInfo?.Video?.VideoId === video?.VideoId ? 'Selected' : 'Select >'}}
+                </button>
+            </div>
+        </div>
+        <div class="no-videos" *ngIf="!loading && videos.length < 1">
+            <h1 class="no-videos-message">
+                No available videos to choose from
+            </h1>
+        </div>
+    </div>
+</div>

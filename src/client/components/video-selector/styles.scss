@@ -1,0 +1,41 @@
+@import '_variables';
+
+.selector-container {
+    width: 100%;
+
+    .current-selection-container {
+        display: flex;
+    }
+
+    .videos-container {
+        display: flex;
+
+        .video-row {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            border-top: 0.1rem solid $divider-color;
+
+            .video-title-container {
+                flex: 3;
+            }
+
+            .video-time-container {
+                flex: 1;
+            }
+
+            .select-video-container {
+                flex: 2;
+                justify-self: flex-end;
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
+
+        .no-videos {
+            width: 100%;
+            text-align: center;
+        }
+    }
+}

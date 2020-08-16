@@ -207,30 +207,6 @@ export class VideoPlayerComponent extends SubscriberComponent {
                 this._playerContainer.requestFullscreen();
             }
         }
-        //  else if (this._player['mozRequestFullScreen']) {
-        //     console.log('using ff functions');
-
-        //     // Firefox
-        //     if (this._fullScreen) {
-        //         document['mozCancelFullScreen']();
-        //         this._fullScreen = false;
-        //     } else {
-        //         this._playerContainer['mozRequestFullScreen']();
-        //         this._fullScreen = true;
-        //     }
-        // } else if (this._player.webkitEnterFullscreen) {
-        //     // in chrome
-        //     console.log('using webkit functions');
-
-        //     if (this._fullScreen) {
-        //         document['webkitCancelFullScreen']();
-        //         this._fullScreen = false;
-        //     } else {
-        //         this._playerContainer['webkitRequestFullScreen']();
-        //         this._fullScreen = true;
-        //         console.log(this._player.webkitDisplayingFullscreen)
-        //     }
-        // }
     }
 
     videoReady() {

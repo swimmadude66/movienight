@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SubscriberComponent } from '@core/';
-import { TheatreInfo, FileInfo, VideoInfo } from '@models/';
+import { TheatreInfo, VideoInfo } from '@models/';
 import { TheatreService, VideoService, ToastService } from '@services/';
 import { VideoPlayerComponent } from '@components/player/component';
 
@@ -27,7 +26,7 @@ export class TheatreComponent extends SubscriberComponent implements OnInit, OnD
 
     isLoading: boolean = false;
     theatre: TheatreInfo;
-    videoPreview: SafeResourceUrl;
+    isSelectingVideo: boolean = false;
 
     private _ready: boolean = false;
 
@@ -38,7 +37,6 @@ export class TheatreComponent extends SubscriberComponent implements OnInit, OnD
         private _video: VideoService,
         private _toast: ToastService,
         private _route: ActivatedRoute,
-        private _santizer: DomSanitizer
     ) {
         super();
     }
@@ -75,11 +73,6 @@ export class TheatreComponent extends SubscriberComponent implements OnInit, OnD
     ngOnDestroy() {
         super.ngOnDestroy();
         this._theatre.leaveTheatre(this.theatre.TheatreId);
-    }
-
-    handleFileInfo(fileInfo: FileInfo) {
-        console.log(fileInfo);
-        this.videoPreview = this._santizer.bypassSecurityTrustResourceUrl(fileInfo.dataUrl);
     }
 
     getInviteLink(): string {
@@ -148,21 +141,12 @@ export class TheatreComponent extends SubscriberComponent implements OnInit, OnD
         );
     }
 
-    selectVideo(video: VideoInfo) {
-        // TODO
-        // open the video selection modal
+    selectVideo(arg: any) {
+        this.isSelectingVideo = true;
     }
 
-    setVideo() {
-        // TODO
-        // - Upload video
-        // - preload video in to player
-        // - fetch filetype and length
-        // - allow setting of name
-        // - attach to theatre
-    }
-
-    uploadVideo() {
+    updateVideo(video: VideoInfo) {
+        this.theatre.Video = video;
 
     }
 
@@ -182,6 +166,9 @@ export class TheatreComponent extends SubscriberComponent implements OnInit, OnD
             if (this._screen) {
                 this._screen.stop();
             }
+        } else if (event.key === 'video_changed') {
+            this.theatre.Video = event.data.Video;
+            this.theatre.StartTime = null;
         }
     }
 

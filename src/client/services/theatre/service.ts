@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, distinctUntilChanged, timeout, switchMap, first } from 'rxjs/operators';
 import { HttpCacheService } from '@services/caching';
-import { TheatreInfo } from '@models/theatre';
+import { TheatreInfo, VideoInfo } from '@models/theatre';
 import { SubscriberComponent } from '@core/';
 import { SocketService } from '@services/socket/service';
 
@@ -84,6 +84,13 @@ export class TheatreService extends SubscriberComponent {
         );
     }
 
+    changeVideo(theatreId: string, video: VideoInfo): Observable<any> {
+        return this._http.post(
+            `/api/theatres/${theatreId}/changevideo`,
+            video
+        );
+    }
+
     startMovie(theatreId: string): Observable<any> {
         return this._http.post(`/api/theatres/${theatreId}/start`, {});
     }
@@ -95,6 +102,7 @@ export class TheatreService extends SubscriberComponent {
     private _initListener() {
         const theatreEvents = [
             'theatre_welcome',
+            'video_changed',
             'start_playing',
             'stop_playing'
         ]

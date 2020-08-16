@@ -1,22 +1,41 @@
 import {Router} from 'express';
 import { Config } from '../models/config';
 import { StorageService } from '../services/storage';
+import { VideosService } from '../services/videos';
 
 module.exports = (APP_CONFIG: Config) => {
     const router = Router();
     const logger = APP_CONFIG.logger;
     const storage = new StorageService(
         logger,
-        APP_CONFIG.db,
         process.env.S3_BUCKET || 'lifeboatmovienight',
         process.env.AWS_ACCESS_KEY_ID,
         process.env.AWS_SECRET_KEY,
         process.env.AWS_REGION || 'us-east-2'
     );
+    const videos = new VideosService(
+        APP_CONFIG.db,
+        storage,
+        logger
+    );
+
+    router.get('/', (req, res) => {
+        logger.log('Getting videos');
+        const ownerId = res.locals.usersession.UserId;
+        videos.getVideos(ownerId)
+        .subscribe(
+            videos => {
+                return res.send({Videos: videos});
+            },
+            err => {
+                return res.status(err.Status || 500).send({Error: err.Message || 'Could not get Videos' });
+            }
+        );
+    });
 
     router.get('/:videoId', (req, res, next) => {
         const videoId = req.params.videoId;
-        storage.getVideoUrl(videoId)
+        videos.getVideoUrl(videoId)
         .subscribe(
             response => {
                 return res.send(response);
@@ -39,7 +58,7 @@ module.exports = (APP_CONFIG: Config) => {
     router.post('/:videoId/complete', (req, res) => {
         const videoId = req.params.videoId;
         const userId = res.locals.usersession.UserId;
-        storage.completeVideoUpload(userId, videoId)
+        videos.completeVideoUpload(userId, videoId)
         .subscribe(
             response => {
                 return res.send({Message: 'Upload completed', VideoId: response.VideoId});
@@ -63,7 +82,7 @@ module.exports = (APP_CONFIG: Config) => {
         // if (body.FileSize > 10485760) { // 10MB
         //     return res.status(413).send({Error: 'Cannot accept files larger than 10MB'});
         // }
-        storage.createVideoUpload(userId, body)
+        videos.createVideoUpload(userId, body)
         .subscribe(
             response => {
                 return res.send(response);
