@@ -20,19 +20,8 @@ export class VideosService {
         const q = 'Select * from `videos` WHERE `Owner`=? AND `Complete`=1;'
         return this._db.query<VideoInfo[]>(q, [ownerId])
         .pipe(
-            switchMap(results => {
-                if (!results || results.length < 1) {
-                    return of([{
-                        VideoId: 'testingvideo',
-                        Title: 'Test Video',
-                        Length: 100,
-                        FileLocation: '/videos',
-                        Format: 'video/mp4',
-                        Owner: ownerId,
-                        Created: new Date(),
-                    }]);
-                }
-                return of(results || []);
+            map(results => {
+                return results || [];
             }),
             catchError(err => {
                 if (err.Status && err.Message) {
